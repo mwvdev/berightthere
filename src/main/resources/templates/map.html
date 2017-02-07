@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Be right there!</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <script th:src="@{/javascript/map.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        beRightThere.storeInitialLocations([[${locations}]]);
+        /*]]>*/
+    </script>
+    <script async="async" defer="defer" th:src="@{https://maps.googleapis.com/maps/api/js?key={googleMapsKey}&amp;callback=beRightThere.googleMapsCallback(googleMapsKey=${googleMapsKey})}"></script>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>
