@@ -1,7 +1,5 @@
 package mwvdev.controller;
 
-import mwvdev.model.Location;
-import mwvdev.model.SimpleLocation;
 import mwvdev.model.Trip;
 import mwvdev.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class MapController {
@@ -37,13 +32,9 @@ public class MapController {
             return "waiting";
         }
 
-        List<SimpleLocation> locations = new ArrayList<>();
-        for(Location location : trip.getLocations()) {
-            locations.add(new SimpleLocation(location.getLatitude(), location.getLongitude()));
-        }
         model.addAttribute("googleMapsKey", googleMapsKey);
-        model.addAttribute("locations", locations);
+        model.addAttribute("locations", trip.getLocations());
         return "map";
     }
-    
+
 }

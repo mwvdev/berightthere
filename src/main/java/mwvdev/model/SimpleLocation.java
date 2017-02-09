@@ -17,5 +17,5 @@ public class SimpleLocation {
     public double getLongitude() {
         return longitude;
     }
-    
+
 }

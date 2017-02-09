@@ -13,15 +13,17 @@ var beRightThere = (function() {
         appendTravelPath(newTravelPath, locations);
         return newTravelPath;
     }
+
     function appendTravelPath(travelPath, locations) {
         locations.forEach(function(location) {
             addTravelPathLocation(travelPath, location);
         });
     }
+    
     function addTravelPathLocation(travelPath, location) {
         travelPath.getPath().push(new google.maps.LatLng(location.latitude, location.longitude));
     }
-    
+
     function googleMapsCallback() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 55.676, lng: 12.568},

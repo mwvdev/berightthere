@@ -1,9 +1,8 @@
 package mwvdev.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mwvdev.model.Location;
-import mwvdev.model.SimpleLocation;
-import mwvdev.model.Trip;
+import mwvdev.entity.LocationEntity;
+import mwvdev.entity.TripEntity;
 import mwvdev.model.TripIdentifier;
 import mwvdev.repository.TripRepository;
 import mwvdev.service.UuidGenerator;
@@ -29,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(LocationController.class)
-@TestPropertySource(locations="classpath:test.properties")
+@TestPropertySource(locations = "classpath:test.properties")
 public class LocationControllerTest {
 
     @Autowired
@@ -58,7 +57,8 @@ public class LocationControllerTest {
     @Test
     public void testAddLocation() throws Exception {
         String tripIdentifier = "0c98b95e-848f-4589-a7f9-dcc7dde95725";
-        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(createTrip(tripIdentifier));
+        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
+                createTripEntity(tripIdentifier));
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
                 tripIdentifier, 55.6782377, 12.5594759).accept(MediaType.APPLICATION_JSON))
@@ -68,7 +68,8 @@ public class LocationControllerTest {
     @Test
     public void testAddLocationWithInvalidLocations() throws Exception {
         String tripIdentifier = "9b50d73c-c503-4562-8852-c61c3defe0e0";
-        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(createTrip(tripIdentifier));
+        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
+                createTripEntity(tripIdentifier));
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
                 tripIdentifier, -120, 0).accept(MediaType.APPLICATION_JSON))
@@ -92,9 +93,11 @@ public class LocationControllerTest {
     @Test
     public void testGetLocations() throws Exception {
         String tripIdentifier = "acc79c61-37e0-44cf-86be-8fe0a52371c5";
-        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(createTrip(tripIdentifier));
+        TripEntity tripEntity = createTripEntity(tripIdentifier);
+        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
+                tripEntity);
 
-        String expectedContent = objectMapper.writeValueAsString(createSimpleLocations());
+        String expectedContent = objectMapper.writeValueAsString(tripEntity.getLocations());
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/locations", tripIdentifier).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andExpect(content().string(expectedContent));
@@ -109,22 +112,17 @@ public class LocationControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private Trip createTrip(String tripIdentifier) {
-        Trip trip = new Trip(tripIdentifier);
-        trip.setLocations(createLocations(trip));
+    private TripEntity createTripEntity(String tripIdentifier) {
+        TripEntity trip = new TripEntity(tripIdentifier);
+        trip.setId(42L);
+        trip.setLocationEntities(createLocationEntities(trip));
         return trip;
     }
 
-    private List<Location> createLocations(Trip trip) {
-        return new ArrayList<>(Arrays.asList(new Location(trip, 55.6739062, 12.5556993),
-                new Location(trip, 55.6746322, 12.5585318),
-                new Location(trip, 55.6764229, 12.5588751)));
+    private List<LocationEntity> createLocationEntities(TripEntity trip) {
+        return new ArrayList<>(Arrays.asList(new LocationEntity(trip.getId(), 55.6739062, 12.5556993),
+                new LocationEntity(trip.getId(), 55.6746322, 12.5585318),
+                new LocationEntity(trip.getId(), 55.6764229, 12.5588751)));
     }
-
-    private List<SimpleLocation> createSimpleLocations() {
-        return Arrays.asList(new SimpleLocation(55.6739062, 12.5556993),
-                new SimpleLocation(55.6746322, 12.5585318),
-                new SimpleLocation(55.6764229, 12.5588751));
-    }
-
+    
 }

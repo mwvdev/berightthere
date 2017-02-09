@@ -1,7 +1,8 @@
 package mwvdev.controller;
 
+import mwvdev.entity.LocationEntity;
+import mwvdev.entity.TripEntity;
 import mwvdev.model.Location;
-import mwvdev.model.SimpleLocation;
 import mwvdev.model.Trip;
 import mwvdev.model.TripIdentifier;
 import mwvdev.repository.TripRepository;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,14 +33,14 @@ public class LocationController {
     public ResponseEntity<TripIdentifier> checkin() {
         TripIdentifier tripIdentifier = new TripIdentifier(uuidGenerator.generate().toString());
 
-        tripRepository.save(new Trip(tripIdentifier.getIdentifier()));
+        tripRepository.save(new TripEntity(tripIdentifier.getIdentifier()));
         return new ResponseEntity<>(tripIdentifier, HttpStatus.OK);
     }
 
     @RequestMapping("/{tripIdentifier}/addLocation/{latitude}/{longitude}")
     public ResponseEntity addLocation(@PathVariable String tripIdentifier, @PathVariable double latitude,
                                       @PathVariable double longitude) {
-        Trip trip = tripRepository.findByTripIdentifier(tripIdentifier);
+        TripEntity trip = tripRepository.findByTripIdentifier(tripIdentifier);
         if(trip == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
@@ -51,24 +51,20 @@ public class LocationController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        trip.getLocations().add(new Location(trip, latitude, longitude));
+        trip.getLocations().add(new LocationEntity(trip.getId(), latitude, longitude));
         tripRepository.save(trip);
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping("/{tripIdentifier}/locations")
-    public ResponseEntity<List<SimpleLocation>> getLocations(@PathVariable String tripIdentifier) {
+    public ResponseEntity<List<Location>> getLocations(@PathVariable String tripIdentifier) {
         Trip trip = tripRepository.findByTripIdentifier(tripIdentifier);
         if(trip == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
-        List<SimpleLocation> locations = new ArrayList<>();
-        trip.getLocations().forEach(location -> locations.add(new SimpleLocation(location.getLatitude(),
-                location.getLongitude())));
 
-        return new ResponseEntity<>(locations, HttpStatus.OK);
+        return new ResponseEntity<>(trip.getLocations(), HttpStatus.OK);
     }
 
 }
