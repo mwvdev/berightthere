@@ -10,6 +10,7 @@ import mwvdev.service.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +21,14 @@ import java.util.List;
 @RequestMapping("/api/trip")
 public class LocationController {
 
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final TripRepository tripRepository;
     private final UuidGenerator uuidGenerator;
 
     @Autowired
-    public LocationController(TripRepository tripRepository, UuidGenerator uuidGenerator) {
+    public LocationController(SimpMessagingTemplate simpMessagingTemplate,
+                              TripRepository tripRepository, UuidGenerator uuidGenerator) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
         this.tripRepository = tripRepository;
         this.uuidGenerator = uuidGenerator;
     }
@@ -51,8 +55,11 @@ public class LocationController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        trip.getLocations().add(new LocationEntity(trip.getId(), latitude, longitude));
+        LocationEntity location = new LocationEntity(trip.getId(), latitude, longitude);
+        trip.getLocationEntities().add(location);
         tripRepository.save(trip);
+
+        simpMessagingTemplate.convertAndSend("/topic/" + tripIdentifier, location);
 
         return new ResponseEntity(HttpStatus.OK);
     }

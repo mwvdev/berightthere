@@ -1,4 +1,4 @@
-var beRightThere = (function() {
+var beRightThereMap = (function() {
     var map;
     var locations;
     var travelPath;
@@ -34,13 +34,20 @@ var beRightThere = (function() {
         locations = null;
     }
 
-    function storeInitialLocations(initialLocations) {
+    function initialize(initialLocations) {
         locations = initialLocations;
+        registerEventHandlers();
+    }
+
+    function registerEventHandlers() {
+        $(document).on('new-location', function(event, location) {
+            addTravelPathLocation(travelPath, location);
+        });
     }
 
     return {
         googleMapsCallback: googleMapsCallback,
-        storeInitialLocations: storeInitialLocations
+        initialize: initialize
     };
 }());
 

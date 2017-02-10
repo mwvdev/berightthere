@@ -3,13 +3,11 @@ package mwvdev.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mwvdev.model.Location;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "location")
 public class LocationEntity implements Serializable, Location {
 
     @Id

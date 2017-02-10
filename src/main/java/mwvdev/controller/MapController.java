@@ -33,6 +33,7 @@ public class MapController {
         }
 
         model.addAttribute("googleMapsKey", googleMapsKey);
+        model.addAttribute("tripIdentifier", trip.getTripIdentifier());
         model.addAttribute("locations", trip.getLocations());
         return "map";
     }
