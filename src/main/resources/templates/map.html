@@ -2,10 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Be right there!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" th:href="@{https://unpkg.com/leaflet@1.0.3/dist/leaflet.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <script th:src="@{https://unpkg.com/leaflet@1.0.3/dist/leaflet.js}"></script>
     <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
     <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
     <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+</head>
+<body>
+    <div id="map"></div>
     <script th:src="@{/javascript/map.js}"></script>
     <script th:src="@{/javascript/websocket.js}"></script>
     <script th:inline="javascript">
@@ -14,9 +20,5 @@
         beRightThereWebSocket.initialize([[${tripIdentifier}]]);
         /*]]>*/
     </script>
-    <script async="async" defer="defer" th:src="@{https://maps.googleapis.com/maps/api/js?key={googleMapsKey}&amp;callback=beRightThereMap.googleMapsCallback(googleMapsKey=${googleMapsKey})}"></script>
-</head>
-<body>
-    <div id="map"></div>
 </body>
 </html>

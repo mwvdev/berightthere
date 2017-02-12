@@ -3,7 +3,6 @@ package mwvdev.controller;
 import mwvdev.model.Trip;
 import mwvdev.repository.TripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class MapController {
-
-    @Value("${brt.googleMapsKey}")
-    private String googleMapsKey;
 
     private final TripRepository tripRepository;
 
@@ -32,7 +28,6 @@ public class MapController {
             return "waiting";
         }
 
-        model.addAttribute("googleMapsKey", googleMapsKey);
         model.addAttribute("tripIdentifier", trip.getTripIdentifier());
         model.addAttribute("locations", trip.getLocations());
         return "map";

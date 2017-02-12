@@ -1,9 +1,16 @@
-#map {
-    height: 100%;
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100vh;
+    width: 100vw;
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+#map .auto-zoom {
+    width: 145px;
+}
+
+#map .auto-zoom-container.hidden {
+    display: none;
 }
