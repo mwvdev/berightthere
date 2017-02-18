@@ -7,10 +7,6 @@ html, body, #map {
     width: 100vw;
 }
 
-#map .auto-zoom {
-    width: 145px;
-}
-
-#map .auto-zoom-container.hidden {
-    display: none;
+#map .auto-focus.focusing > i {
+    color: green;
 }

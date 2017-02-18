@@ -1,14 +1,13 @@
 var beRightThereMap = (function() {
     var map;
     var travelPath;
-    var autoZoomEnabled = true;
-    var autoZoomInProgress = false;
+    var autoFocusEnabled = true;
 
     function createTravelPath(map, locations) {
-        var travelPath = L.polyline([], {color: 'red'}).addTo(map);
+        var travelPath = L.polyline([], {color: '#00a2e8'}).addTo(map);
         if(locations.length > 0) {
             appendTravelPath(travelPath, locations);
-            fitBounds(map, travelPath, autoZoomEnabled);
+            fitBounds(map, travelPath, autoFocusEnabled);
         }
         return travelPath;
     }
@@ -23,9 +22,8 @@ var beRightThereMap = (function() {
         travelPath.addLatLng(L.latLng([location.latitude, location.longitude]));
     }
 
-    function fitBounds(map, travelPath, autoZoomEnabled) {
-        if(autoZoomEnabled) {
-            autoZoomInProgress = true;
+    function fitBounds(map, travelPath, autoFocusEnabled) {
+        if(autoFocusEnabled) {
             map.fitBounds(travelPath.getBounds());
         }
     }
@@ -33,64 +31,56 @@ var beRightThereMap = (function() {
     function initMap(locations) {
         map = L.map('map');
 
-        var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 6, maxZoom: 16, attribution: osmAttrib});
+        var osmUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}@2x.png';
+        var osmAttrib = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>';
+        var osm = new L.TileLayer(osmUrl, {minZoom: 6, maxZoom: 18, attribution: osmAttrib});
 
         map.setView([55.676, 12.568], 9);
         map.addLayer(osm);
 
         travelPath = createTravelPath(map, locations);
-        initAutoZoomControl(map, travelPath);
+        initAutoFocusControl(map, travelPath);
     }
 
-    function initAutoZoomControl(map, travelPath) {
-        var container;
+    function initAutoFocusControl(map, travelPath) {
         var button;
 
-        function handleButtonClick(event) {
-            autoZoomEnabled = true;
-            fitBounds(map, travelPath, autoZoomEnabled);
-            L.DomUtil.addClass(container, 'hidden');
-        }
+        function handleClick(event) {
+            autoFocusEnabled = !autoFocusEnabled;
+            fitBounds(map, travelPath, autoFocusEnabled);
 
-        function handleZoomEnd(event) {
-            if(autoZoomInProgress) {
-                autoZoomInProgress = false;
+            if(autoFocusEnabled) {
+                L.DomUtil.addClass(button, 'focusing');
             }
             else {
-                autoZoomEnabled = false;
-                L.DomUtil.removeClass(container, 'hidden');
+                L.DomUtil.removeClass(button, 'focusing');
             }
         }
 
-        L.Control.AutoZoom = L.Control.extend({
+        L.Control.AutoFocus = L.Control.extend({
             onAdd: function(map) {
-                container = L.DomUtil.create('div', 'auto-zoom-container hidden leaflet-bar leaflet-control');
-                button = L.DomUtil.create('a', 'auto-zoom', container);
-                button.innerHTML = 'Re-activate auto-zoom';
+                container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                button = L.DomUtil.create('a', 'auto-focus focusing', container);
+                button.innerHTML = '<i class="icon-binoculars" />';
                 button.role = "button";
                 button.href = "#";
 
                 L.DomEvent.disableClickPropagation(button);
+                L.DomEvent.on(button, 'click', handleClick);
 
-                L.DomEvent.on(button, 'click', handleButtonClick);
-                map.on("zoomend", handleZoomEnd);
-                
                 return container;
             },
 
             onRemove: function(map) {
-                L.DomEvent.off(button, 'click', handleButtonClick);
-                map.off('zoomend', handleZoomEnd);
+                L.DomEvent.off(button, 'click', handleClick);
             }
         });
 
-        L.control.autozoom = function(opts) {
-            return new L.Control.AutoZoom(opts);
+        L.control.autofocus = function(opts) {
+            return new L.Control.AutoFocus(opts);
         };
 
-        L.control.autozoom({ position: 'bottomleft' }).addTo(map);
+        L.control.autofocus({ position: 'bottomleft' }).addTo(map);
     }
 
     function initialize(initialLocations) {
@@ -101,7 +91,7 @@ var beRightThereMap = (function() {
     function registerEventHandlers() {
         $(document).on('new-location', function(event, location) {
             addTravelPathLocation(travelPath, location);
-            fitBounds(map, travelPath, autoZoomEnabled);
+            fitBounds(map, travelPath, autoFocusEnabled);
         });
     }
 
