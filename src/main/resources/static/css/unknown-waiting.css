@@ -1,0 +1,19 @@
+body {
+    background: #a8a8a8;
+    color: white;
+    font-size: 15pt;
+}
+
+.container {
+    margin: 15px auto;
+    width: 400px;
+}
+
+.icon {
+    float: left;
+    font-size: 50pt;
+}
+
+.text {
+    margin-left: 80px;
+}

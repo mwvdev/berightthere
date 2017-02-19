@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('../fonts/icomoon.ttf?4xlibc') format('truetype'),
-    url('../fonts/icomoon.woff?4xlibc') format('woff'),
-    url('../fonts/icomoon.svg?4xlibc#icomoon') format('svg');
+    url('../fonts/icomoon.ttf?4ag4wh') format('truetype'),
+    url('../fonts/icomoon.woff?4ag4wh') format('woff'),
+    url('../fonts/icomoon.svg?4ag4wh#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -37,5 +37,11 @@
 }
 .icon-target:before {
   content: "\e9b3";
+}
+.icon-hipster:before {
+  content: "\e9f9";
+}
+.icon-wondering:before {
+  content: "\e9fb";
 }
 
