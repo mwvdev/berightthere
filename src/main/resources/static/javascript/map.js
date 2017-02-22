@@ -1,25 +1,29 @@
 var beRightThereMap = (function() {
     var map;
     var travelPath;
+    var positionMarker;
     var autoFocusEnabled = true;
 
     function createTravelPath(map, locations) {
-        var travelPath = L.polyline([], {color: '#00a2e8'}).addTo(map);
-        if(locations.length > 0) {
-            appendTravelPath(travelPath, locations);
-            fitBounds(map, travelPath, autoFocusEnabled);
-        }
-        return travelPath;
-    }
-
-    function appendTravelPath(travelPath, locations) {
-        locations.forEach(function(location) {
-            addTravelPathLocation(travelPath, location);
+        var latLngs = locations.map(function(location) {
+            return [location.latitude, location.longitude];
         });
+        var newTravelPath = L.polyline(latLngs, {color: '#00a2e8'}).addTo(map);
+        fitBounds(map, newTravelPath, autoFocusEnabled);
+        
+        return newTravelPath;
     }
 
     function addTravelPathLocation(travelPath, location) {
         travelPath.addLatLng(L.latLng([location.latitude, location.longitude]));
+    }
+
+    function createPositionMarker(map, location) {
+        return L.marker([location.latitude, location.longitude]).addTo(map);
+    }
+
+    function updatePositionMarker(positionMarker, location) {
+        positionMarker.setLatLng([location.latitude, location.longitude]);
     }
 
     function fitBounds(map, travelPath, autoFocusEnabled) {
@@ -39,6 +43,7 @@ var beRightThereMap = (function() {
         map.addLayer(osm);
 
         travelPath = createTravelPath(map, locations);
+        positionMarker = createPositionMarker(map, locations[locations.length-1]);
         initAutoFocusControl(map, travelPath);
     }
 
@@ -92,6 +97,7 @@ var beRightThereMap = (function() {
         $(document).on('new-location', function(event, location) {
             addTravelPathLocation(travelPath, location);
             fitBounds(map, travelPath, autoFocusEnabled);
+            updatePositionMarker(positionMarker, location);
         });
     }
 
