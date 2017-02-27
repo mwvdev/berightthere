@@ -30,7 +30,7 @@ dependencies {
 
     compile('org.webjars:webjars-locator')
     compile('org.webjars:jquery:3.1.1-1')
-    compile('org.webjars:sockjs-client:1.0.2')
+    compile('org.webjars:sockjs-client:1.1.2')
     compile('org.webjars:stomp-websocket:2.3.3')
 
     runtime('com.h2database:h2')
