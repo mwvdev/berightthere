@@ -46,7 +46,7 @@ public class LocationControllerTest {
     private UuidGenerator uuidGenerator;
 
     @Test
-    public void testCheckin() throws Exception {
+    public void canCheckin() throws Exception {
         String tripIdentifier = "0686be0a-cbd8-4f28-b972-17f010acddc6";
         given(uuidGenerator.generate()).willReturn(UUID.fromString(tripIdentifier));
 
@@ -57,7 +57,7 @@ public class LocationControllerTest {
     }
 
     @Test
-    public void testAddLocation() throws Exception {
+    public void canAddLocation() throws Exception {
         String tripIdentifier = "0c98b95e-848f-4589-a7f9-dcc7dde95725";
         given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
                 createTripEntity(tripIdentifier));
@@ -68,7 +68,18 @@ public class LocationControllerTest {
     }
 
     @Test
-    public void testAddLocationWithInvalidLocations() throws Exception {
+    public void canAddLocationWithOptionalParameters() throws Exception {
+        String tripIdentifier = "0c98b95e-848f-4589-a7f9-dcc7dde95725";
+        given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
+                createTripEntity(tripIdentifier));
+
+        this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}?accuracy={accuracy}",
+                tripIdentifier, 55.6782377, 12.5594759, 15.23).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addLocation_ThrowsWhenInvalidLocations() throws Exception {
         String tripIdentifier = "9b50d73c-c503-4562-8852-c61c3defe0e0";
         given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
                 createTripEntity(tripIdentifier));
@@ -83,7 +94,7 @@ public class LocationControllerTest {
     }
 
     @Test
-    public void testAddLocationWithUnknownTrip() throws Exception {
+    public void addLocation_ThrowsWhenUnknownTrip() throws Exception {
         String tripIdentifier = "2238af77-343c-45c9-b2b2-2c0bb9b2ba96";
         given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(null);
 
@@ -93,7 +104,7 @@ public class LocationControllerTest {
     }
 
     @Test
-    public void testGetLocations() throws Exception {
+    public void canGetLocations() throws Exception {
         String tripIdentifier = "acc79c61-37e0-44cf-86be-8fe0a52371c5";
         TripEntity tripEntity = createTripEntity(tripIdentifier);
         given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(
@@ -106,7 +117,7 @@ public class LocationControllerTest {
     }
 
     @Test
-    public void testGetLocationsWhenUnknownTrip() throws Exception {
+    public void getLocations_ThrowsWhenUnknownTrip() throws Exception {
         String tripIdentifier = "4458cbb0-aed8-4732-bc4f-6641949a23fc";
         given(tripRepository.findByTripIdentifier(tripIdentifier)).willReturn(null);
 
@@ -122,9 +133,9 @@ public class LocationControllerTest {
     }
 
     private List<LocationEntity> createLocationEntities(TripEntity trip) {
-        return new ArrayList<>(Arrays.asList(new LocationEntity(trip.getId(), 55.6739062, 12.5556993),
-                new LocationEntity(trip.getId(), 55.6746322, 12.5585318),
-                new LocationEntity(trip.getId(), 55.6764229, 12.5588751)));
+        return new ArrayList<>(Arrays.asList(new LocationEntity(trip.getId(), 55.6739062, 12.5556993, 7.5),
+                new LocationEntity(trip.getId(), 55.6746322, 12.5585318, 5.2),
+                new LocationEntity(trip.getId(), 55.6764229, 12.5588751, 3.3)));
     }
     
 }

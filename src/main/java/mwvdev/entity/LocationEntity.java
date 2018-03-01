@@ -22,14 +22,17 @@ public class LocationEntity implements Serializable, Location {
     private double latitude;
     private double longitude;
 
+    private Double accuracy;
+
     protected LocationEntity() {
 
     }
 
-    public LocationEntity(long tripId, double latitude, double longitude) {
+    public LocationEntity(long tripId, double latitude, double longitude, Double accuracy) {
         this.tripId = tripId;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.accuracy = accuracy;
     }
 
     public Long getId() {
@@ -44,11 +47,9 @@ public class LocationEntity implements Serializable, Location {
         return tripId;
     }
 
-
     public void setTripId(long tripId) {
         this.tripId = tripId;
     }
-
 
     @Override
     public double getLatitude() {
@@ -68,4 +69,12 @@ public class LocationEntity implements Serializable, Location {
         this.longitude = longitude;
     }
 
+    @Override
+    public Double getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(Double accuracy) {
+        this.accuracy = accuracy;
+    }
 }

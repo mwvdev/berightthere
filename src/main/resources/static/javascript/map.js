@@ -2,6 +2,7 @@ var beRightThereMap = (function() {
     var map;
     var travelPath;
     var positionMarker;
+    var accuracyIndicator;
     var autoFocusEnabled = true;
 
     function createTravelPath(map, locations) {
@@ -26,6 +27,26 @@ var beRightThereMap = (function() {
         positionMarker.setLatLng([location.latitude, location.longitude]);
     }
 
+    function createAccuracyIndicator(map, location) {
+        return L.circle([location.latitude, location.longitude], {
+            color: '#5697ff',
+            fillColor: '#7badfc',
+            fillOpacity: 0.3,
+            weight: 1,
+            radius: location.accuracy
+        }).addTo(map);
+    }
+
+    function updateAccuracyIndicator(accuracyIndicator, location) {
+        if(!location.accuracy) {
+            accuracyIndicator.setRadius(0);
+            return;
+        }
+
+        accuracyIndicator.setLatLng([location.latitude, location.longitude]);
+        accuracyIndicator.setRadius(location.accuracy);
+    }
+
     function fitBounds(map, travelPath, autoFocusEnabled) {
         if(autoFocusEnabled) {
             map.fitBounds(travelPath.getBounds());
@@ -44,6 +65,7 @@ var beRightThereMap = (function() {
 
         travelPath = createTravelPath(map, locations);
         positionMarker = createPositionMarker(map, locations[locations.length-1]);
+        accuracyIndicator = createAccuracyIndicator(map, locations[locations.length-1]);
         initAutoFocusControl(map, travelPath);
     }
 
@@ -98,6 +120,7 @@ var beRightThereMap = (function() {
             addTravelPathLocation(travelPath, location);
             fitBounds(map, travelPath, autoFocusEnabled);
             updatePositionMarker(positionMarker, location);
+            updateAccuracyIndicator(accuracyIndicator, location);
         });
     }
 

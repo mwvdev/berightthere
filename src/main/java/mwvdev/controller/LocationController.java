@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -42,8 +43,10 @@ public class LocationController {
     }
 
     @RequestMapping("/{tripIdentifier}/addLocation/{latitude}/{longitude}")
-    public ResponseEntity addLocation(@PathVariable String tripIdentifier, @PathVariable double latitude,
-                                      @PathVariable double longitude) {
+    public ResponseEntity addLocation(@PathVariable String tripIdentifier,
+                                      @PathVariable double latitude,
+                                      @PathVariable double longitude,
+                                      @RequestParam(required = false) Double accuracy) {
         TripEntity trip = tripRepository.findByTripIdentifier(tripIdentifier);
         if(trip == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -55,7 +58,7 @@ public class LocationController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        LocationEntity location = new LocationEntity(trip.getId(), latitude, longitude);
+        LocationEntity location = new LocationEntity(trip.getId(), latitude, longitude, accuracy);
         trip.getLocationEntities().add(location);
         tripRepository.save(trip);
 
