@@ -28,13 +28,16 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-websocket')
 
+    compile('org.liquibase:liquibase-core')
+
     compile('org.webjars:webjars-locator')
     compile('org.webjars:jquery:3.2.1')
     compile('org.webjars:sockjs-client:1.1.2')
     compile('org.webjars:stomp-websocket:2.3.3')
 
     runtime('com.h2database:h2')
-    runtime('org.springframework.boot:spring-boot-devtools')
+    runtime('org.postgresql:postgresql:42.2.1')
+    //runtime('org.springframework.boot:spring-boot-devtools')
     
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }

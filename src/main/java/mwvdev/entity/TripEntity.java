@@ -14,7 +14,7 @@ import java.util.List;
 public class TripEntity implements Serializable, Trip {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
 
