@@ -15,10 +15,6 @@ jar {
     version = '1.1.0-SNAPSHOT'
 }
 
-springBoot {
-    executable = true
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
