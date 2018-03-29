@@ -1,6 +1,7 @@
 FROM openjdk:8-jre-alpine
 
-RUN groupadd -r berightthere --gid=999 && useradd -r -g postgres --uid=999 berightthere
+RUN addgroup -g 1000 -S berightthere && \
+    adduser -u 1000 -S berightthere -G berightthere
 USER berightthere
 
 VOLUME /tmp
