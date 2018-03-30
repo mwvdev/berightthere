@@ -9,3 +9,12 @@ A web interface allows users to see an overview of the current trip using an int
 ![Example screenshot](screenshots/map.png)
 
 The server is powered by Spring Boot (MVC, thymeleaf, web socket, JPA data). The web interface uses [Leaflet](http://leafletjs.com) to provide the map and [CARTO](https://carto.com/attribution) for tiles. An icon pack is provided by [icomoon](https://icomoon.io).
+
+# Try it out using Docker
+Be right there is available on [Docker Hub](https://hub.docker.com/r/mwvdev/berightthere).
+
+Try it out using an in-memory database:
+
+``` bash
+$ docker run mwvdev/berightthere
+```
