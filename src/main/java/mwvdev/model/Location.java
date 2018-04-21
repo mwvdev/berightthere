@@ -9,4 +9,5 @@ public interface Location extends Serializable {
     double getLongitude();
 
     Double getAccuracy();
+
 }

@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(LocationController.class)
+@WebMvcTest(value = LocationController.class, secure = false)
 public class LocationControllerTest {
 
     @Autowired

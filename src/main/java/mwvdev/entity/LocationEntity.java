@@ -77,4 +77,5 @@ public class LocationEntity implements Serializable, Location {
     public void setAccuracy(Double accuracy) {
         this.accuracy = accuracy;
     }
+
 }
