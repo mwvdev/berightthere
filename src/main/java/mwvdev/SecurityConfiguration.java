@@ -17,7 +17,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .httpBasic();
+                .httpBasic()
+                .and()
+                .cors();
     }
 
 }

@@ -1,4 +1,4 @@
-package mwvdev.controller;
+package mwvdev.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mwvdev.entity.LocationEntity;

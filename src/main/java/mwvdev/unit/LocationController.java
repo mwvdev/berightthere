@@ -1,4 +1,4 @@
-package mwvdev.controller;
+package mwvdev.unit;
 
 import mwvdev.entity.LocationEntity;
 import mwvdev.entity.TripEntity;

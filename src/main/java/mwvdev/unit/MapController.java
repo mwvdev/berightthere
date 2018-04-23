@@ -1,4 +1,4 @@
-package mwvdev.controller;
+package mwvdev.unit;
 
 import mwvdev.model.Trip;
 import mwvdev.repository.TripRepository;

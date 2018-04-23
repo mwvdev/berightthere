@@ -1,4 +1,4 @@
-package mwvdev.controller;
+package mwvdev.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,26 +7,19 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class SecurityConfigurationTest
+public class SecurityConfigurationTest extends BaseIntegrationTest
 {
 
     @Autowired
     private SecurityProperties securityProperties;
-
-    @LocalServerPort
-    private int port;
 
     @Test
     public void canCheckinAnynomously() throws IllegalStateException {
@@ -98,13 +91,6 @@ public class SecurityConfigurationTest
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    private URI getUri(String path) {
-        return UriComponentsBuilder
-                .fromHttpUrl("http://localhost:{port}/{path}")
-                .buildAndExpand(port, path)
-                .toUri();
     }
 
     private TestRestTemplate getAnonymousRestTemplate() {
