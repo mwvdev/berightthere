@@ -1,6 +1,7 @@
 package mwvdev.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mwvdev.controller.LocationController;
 import mwvdev.entity.LocationEntity;
 import mwvdev.entity.TripEntity;
 import mwvdev.model.TripIdentifier;
