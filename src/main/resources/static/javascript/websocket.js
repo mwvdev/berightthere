@@ -1,4 +1,4 @@
-define(["jquery", "sockjs", "stomp", "module"], function($, sockjs, stomp, module) {
+define(["map", "sockjs", "stomp", "module"], function(map, sockjs, stomp, module) {
     var config = module.config();
 
     var stompClient;
@@ -6,7 +6,7 @@ define(["jquery", "sockjs", "stomp", "module"], function($, sockjs, stomp, modul
         stompClient = stomp.over(new sockjs('/berightthere'));
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/topic/' + tripIdentifier, function(location) {
-                $(document).trigger('new-location', JSON.parse(location.body));
+                map.addLocation(JSON.parse(location.body));
             });
         });
     }

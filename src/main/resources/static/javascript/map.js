@@ -1,4 +1,4 @@
-define(["jquery", "leaflet", "module"], function($, L, module) {
+define(["leaflet", "module"], function(L, module) {
     var config = module.config();
 
     var map;
@@ -112,19 +112,16 @@ define(["jquery", "leaflet", "module"], function($, L, module) {
         L.control.autofocus({ position: 'bottomleft' }).addTo(map);
     }
 
-    function registerEventHandlers() {
-        $(document).on('new-location', function(event, location) {
-            addTravelPathLocation(travelPath, location);
-            fitBounds(map, travelPath, autoFocusEnabled);
-            updatePositionMarker(positionMarker, location);
-            updateAccuracyIndicator(accuracyIndicator, location);
-        });
+    function addLocation(location) {
+        addTravelPathLocation(travelPath, location);
+        fitBounds(map, travelPath, autoFocusEnabled);
+        updatePositionMarker(positionMarker, location);
+        updateAccuracyIndicator(accuracyIndicator, location);
     }
 
-    function initialize(initialLocations) {
-        initMap(initialLocations);
-        registerEventHandlers();
-    }
+    initMap(config.locations);
 
-    initialize(config.locations);
+    return {
+        addLocation: addLocation
+    };
 });
