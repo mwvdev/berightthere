@@ -1,4 +1,6 @@
-var beRightThereMap = (function() {
+define(["jquery", "leaflet", "module"], function($, L, module) {
+    var config = module.config();
+
     var map;
     var travelPath;
     var positionMarker;
@@ -11,7 +13,7 @@ var beRightThereMap = (function() {
         });
         var newTravelPath = L.polyline(latLngs, {color: '#00a2e8'}).addTo(map);
         fitBounds(map, newTravelPath, autoFocusEnabled);
-        
+
         return newTravelPath;
     }
 
@@ -110,11 +112,6 @@ var beRightThereMap = (function() {
         L.control.autofocus({ position: 'bottomleft' }).addTo(map);
     }
 
-    function initialize(initialLocations) {
-        initMap(initialLocations);
-        registerEventHandlers();
-    }
-
     function registerEventHandlers() {
         $(document).on('new-location', function(event, location) {
             addTravelPathLocation(travelPath, location);
@@ -124,8 +121,10 @@ var beRightThereMap = (function() {
         });
     }
 
-    return {
-        initialize: initialize
-    };
-}());
+    function initialize(initialLocations) {
+        initMap(initialLocations);
+        registerEventHandlers();
+    }
 
+    initialize(config.locations);
+});

@@ -6,20 +6,23 @@
     <link rel="stylesheet" th:href="@{/webjars/leaflet/leaflet.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/icomoon.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
-    <script th:src="@{/webjars/leaflet/leaflet.js}"></script>
-    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
-    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
-    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var require = {
+            config: {
+                'map': {
+                    locations: [[${locations}]]
+                },
+                'websocket': {
+                    tripIdentifier: [[${tripIdentifier}]]
+                }
+            }
+        };
+        /*]]>*/
+    </script>
+    <script data-main="/javascript/app" src="/webjars/requirejs/require.js"></script>
 </head>
 <body>
     <div id="map"></div>
-    <script th:src="@{/javascript/map.js}"></script>
-    <script th:src="@{/javascript/websocket.js}"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        beRightThereMap.initialize([[${locations}]]);
-        beRightThereWebSocket.initialize([[${tripIdentifier}]]);
-        /*]]>*/
-    </script>
 </body>
 </html>
