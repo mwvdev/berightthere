@@ -1,7 +1,7 @@
 requirejs.config({
     baseUrl: '/webjars',
     paths: {
-        eventEmitter: 'eventEmitter/EventEmitter',
+        eventEmitter: 'eventEmitter/EventEmitter.min',
         leaflet: 'leaflet/leaflet',
         'map.autofocus': '../javascript/map.autofocus',
         'map.core': '../javascript/map.core',
