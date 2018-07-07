@@ -1,8 +1,11 @@
 requirejs.config({
     baseUrl: '/webjars',
     paths: {
+        eventEmitter: 'eventEmitter/EventEmitter',
         leaflet: 'leaflet/leaflet',
-        map: '../javascript/map',
+        'map.autofocus': '../javascript/map.autofocus',
+        'map.core': '../javascript/map.core',
+        'map.events': '../javascript/map.events',
         sockjs: 'sockjs-client/sockjs.min',
         stomp: 'stomp-websocket/stomp.min',
         websocket: '../javascript/websocket'
@@ -14,4 +17,4 @@ requirejs.config({
     }
 });
 
-requirejs(["leaflet", "map", "sockjs", "stomp", "websocket"]);
+requirejs(["eventEmitter", "leaflet", "map.autofocus", "map.core", "map.events", "sockjs", "stomp", "websocket"]);
