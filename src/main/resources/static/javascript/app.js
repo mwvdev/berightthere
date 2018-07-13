@@ -3,6 +3,7 @@ requirejs.config({
     paths: {
         eventEmitter: 'eventEmitter/EventEmitter.min',
         leaflet: 'leaflet/leaflet',
+        'map.accuracy': '../javascript/map.accuracy',
         'map.autofocus': '../javascript/map.autofocus',
         'map.core': '../javascript/map.core',
         'map.events': '../javascript/map.events',
@@ -17,4 +18,4 @@ requirejs.config({
     }
 });
 
-requirejs(["eventEmitter", "leaflet", "map.autofocus", "map.core", "map.events", "sockjs", "stomp", "websocket"]);
+requirejs(["eventEmitter", "leaflet", "map.accuracy", "map.autofocus", "map.core", "map.events", "sockjs", "stomp", "websocket"]);

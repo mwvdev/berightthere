@@ -2,14 +2,12 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
     var map;
     var travelPath;
     var positionMarker;
-    var accuracyIndicator;
 
     var config = module.config();
     var eventEmitter = new EventEmitter();
     eventEmitter.addListener(mapEvents.location.received, function(location) {
          addTravelPathLocation(travelPath, location);
          updatePositionMarker(positionMarker, location);
-         updateAccuracyIndicator(accuracyIndicator, location);
      });
 
     function createTravelPath(map, locations) {
@@ -33,26 +31,6 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
         positionMarker.setLatLng([location.latitude, location.longitude]);
     }
 
-    function createAccuracyIndicator(map, location) {
-        return L.circle([location.latitude, location.longitude], {
-            color: '#5697ff',
-            fillColor: '#7badfc',
-            fillOpacity: 0.3,
-            weight: 1,
-            radius: location.accuracy
-        }).addTo(map);
-    }
-
-    function updateAccuracyIndicator(accuracyIndicator, location) {
-        if(!location.accuracy) {
-            accuracyIndicator.setRadius(0);
-            return;
-        }
-
-        accuracyIndicator.setLatLng([location.latitude, location.longitude]);
-        accuracyIndicator.setRadius(location.accuracy);
-    }
-
     function fitBounds() {
         map.fitBounds(travelPath.getBounds());
     }
@@ -70,7 +48,6 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
         travelPath = createTravelPath(map, locations);
         fitBounds();
         positionMarker = createPositionMarker(map, locations[locations.length-1]);
-        accuracyIndicator = createAccuracyIndicator(map, locations[locations.length-1]);
     }
 
     initMap(config.locations);
