@@ -1,44 +1,40 @@
 package mwvdev.controller;
 
-import mwvdev.entity.LocationEntity;
-import mwvdev.entity.TripEntity;
 import mwvdev.model.Location;
-import mwvdev.model.Trip;
 import mwvdev.model.TripIdentifier;
-import mwvdev.repository.TripRepository;
-import mwvdev.service.UuidGenerator;
+import mwvdev.service.location.TripService;
+import mwvdev.service.location.UnknownTripException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/trip")
-public class LocationController {
+public class TripController {
 
+    private final TripService tripService;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final TripRepository tripRepository;
-    private final UuidGenerator uuidGenerator;
 
     @Autowired
-    public LocationController(SimpMessagingTemplate simpMessagingTemplate,
-                              TripRepository tripRepository, UuidGenerator uuidGenerator) {
+    public TripController(TripService tripService,
+                          SimpMessagingTemplate simpMessagingTemplate) {
+        this.tripService = tripService;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.tripRepository = tripRepository;
-        this.uuidGenerator = uuidGenerator;
     }
 
     @RequestMapping("/checkin")
     public ResponseEntity<TripIdentifier> checkin() {
-        TripIdentifier tripIdentifier = new TripIdentifier(uuidGenerator.generate().toString());
 
-        tripRepository.save(new TripEntity(tripIdentifier.getIdentifier()));
+        TripIdentifier tripIdentifier = new TripIdentifier(tripService.checkin());
         return new ResponseEntity<>(tripIdentifier, HttpStatus.OK);
     }
 
@@ -47,10 +43,6 @@ public class LocationController {
                                       @PathVariable double latitude,
                                       @PathVariable double longitude,
                                       @RequestParam(required = false) Double accuracy) {
-        TripEntity trip = tripRepository.findByTripIdentifier(tripIdentifier);
-        if(trip == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
         if(latitude < -90 || latitude > 90) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -58,9 +50,13 @@ public class LocationController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        LocationEntity location = new LocationEntity(trip.getId(), latitude, longitude, accuracy);
-        trip.getLocationEntities().add(location);
-        tripRepository.save(trip);
+        Location location;
+        try {
+            location = tripService.addLocation(tripIdentifier, latitude, longitude, accuracy);
+        }
+        catch (UnknownTripException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
         simpMessagingTemplate.convertAndSend("/topic/" + tripIdentifier, location);
 
@@ -68,13 +64,15 @@ public class LocationController {
     }
 
     @RequestMapping("/{tripIdentifier}/locations")
-    public ResponseEntity<List<Location>> getLocations(@PathVariable String tripIdentifier) {
-        Trip trip = tripRepository.findByTripIdentifier(tripIdentifier);
-        if(trip == null) {
+    @Transactional
+    public ResponseEntity<Collection<Location>> getLocations(@PathVariable String tripIdentifier) {
+        try {
+            List<Location> locations = tripService.getLocations(tripIdentifier);
+            return new ResponseEntity<>(locations, HttpStatus.OK);
+        }
+        catch(UnknownTripException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(trip.getLocations(), HttpStatus.OK);
     }
 
 }

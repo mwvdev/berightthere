@@ -1,4 +1,4 @@
-package mwvdev.integration;
+package mwvdev.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,11 +11,12 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CorsConfigurationTest extends BaseIntegrationTest {
+public class CorsConfigurationIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -25,8 +26,8 @@ public class CorsConfigurationTest extends BaseIntegrationTest {
         RequestEntity requestEntity = RequestEntity.get(getUri("api/trip/checkin")).header(HttpHeaders.ORIGIN, "http://example.org").build();
         ResponseEntity response = restTemplate.exchange(requestEntity, String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("*", response.getHeaders().getAccessControlAllowOrigin());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat("*", is(response.getHeaders().getAccessControlAllowOrigin()));
     }
 
 }

@@ -3,14 +3,17 @@ define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
     var autoFocusEnabled = true;
 
     var eventEmitter = mapCore.getEventEmitter();
-    eventEmitter.addListener(mapEvents.location.received, function(location) {
+    eventEmitter.addListener(mapEvents.location.received, function() {
+        fitBoundsWhenAutoFocusing();
+    });
+    eventEmitter.addListener(mapEvents.websocket.reconnected, function() {
         fitBoundsWhenAutoFocusing();
     });
 
     function fitBoundsWhenAutoFocusing() {
         if(autoFocusEnabled) {
             mapCore.fitBounds()
-        };
+        }
     }
 
     function handleClick(event) {
@@ -27,7 +30,7 @@ define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
 
     L.Control.AutoFocus = L.Control.extend({
         onAdd: function(map) {
-            container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+            var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             button = L.DomUtil.create('a', 'auto-focus focusing', container);
             button.innerHTML = '<i class="icon-binoculars" />';
             button.role = "button";

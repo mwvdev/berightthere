@@ -10,13 +10,19 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
          updatePositionMarker(positionMarker, location);
      });
 
+    eventEmitter.addListener(mapEvents.websocket.reconnected, function(locations) {
+        travelPath.remove();
+        travelPath = createTravelPath(map, locations);
+
+        updatePositionMarker(positionMarker, locations[locations.length-1]);
+    });
+
     function createTravelPath(map, locations) {
         var latLngs = locations.map(function(location) {
             return [location.latitude, location.longitude];
         });
-        var newTravelPath = L.polyline(latLngs, {color: '#00a2e8'}).addTo(map);
 
-        return newTravelPath;
+        return L.polyline(latLngs, {color: '#00a2e8'}).addTo(map);
     }
 
     function addTravelPathLocation(travelPath, location) {

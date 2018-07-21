@@ -7,8 +7,8 @@ requirejs.config({
         'map.autofocus': '../javascript/map.autofocus',
         'map.core': '../javascript/map.core',
         'map.events': '../javascript/map.events',
-        sockjs: 'sockjs-client/sockjs.min',
-        stomp: 'stomp-websocket/stomp.min',
+        sockjs: 'sockjs-client/dist/sockjs.min',
+        stomp: 'webstomp-client/dist/webstomp.min',
         websocket: '../javascript/websocket'
     },
     shim: {

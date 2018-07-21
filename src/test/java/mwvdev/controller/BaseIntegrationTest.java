@@ -1,4 +1,4 @@
-package mwvdev.integration;
+package mwvdev.controller;
 
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.util.UriComponentsBuilder;

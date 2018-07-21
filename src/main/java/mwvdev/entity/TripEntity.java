@@ -50,7 +50,6 @@ public class TripEntity implements Serializable, Trip {
         this.tripIdentifier = tripIdentifier;
     }
 
-
     @Override
     public List<Location> getLocations() {
         return new ArrayList<>(locationEntities);

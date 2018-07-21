@@ -6,6 +6,9 @@ define(["leaflet", "map.core", "map.events", "module"], function(L, mapCore, map
     eventEmitter.addListener(mapEvents.location.received, function(location) {
         updateAccuracyIndicator(accuracyIndicator, location);
     });
+    eventEmitter.addListener(mapEvents.websocket.reconnected, function(locations) {
+        updateAccuracyIndicator(accuracyIndicator, locations[locations.length-1]);
+    });
 
     function createAccuracyIndicator(map, location) {
         return L.circle([location.latitude, location.longitude], {

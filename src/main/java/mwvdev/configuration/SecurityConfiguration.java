@@ -1,4 +1,4 @@
-package mwvdev;
+package mwvdev.configuration;
 
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.health.HealthEndpoint;

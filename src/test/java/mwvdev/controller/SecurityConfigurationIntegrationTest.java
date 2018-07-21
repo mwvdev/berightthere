@@ -1,4 +1,4 @@
-package mwvdev.integration;
+package mwvdev.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,11 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class SecurityConfigurationTest extends BaseIntegrationTest
+public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 {
 
     @Autowired
@@ -27,7 +28,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/checkin"), String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
     @Test
@@ -36,7 +37,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/addLocation/55.6745/12.56"), String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
     @Test
@@ -45,7 +46,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/locations"), String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
     @Test
@@ -54,7 +55,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("trip/ab7d8df0-e952-4956-8c38-0351b90fd045"), String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
     @Test
@@ -63,7 +64,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/health"), String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
     }
 
     @Test
@@ -90,7 +91,7 @@ public class SecurityConfigurationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
     private TestRestTemplate getAnonymousRestTemplate() {
