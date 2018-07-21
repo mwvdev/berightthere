@@ -25,7 +25,7 @@ define(["map.core", "map.events", "sockjs", "stomp", "module"], function(mapCore
         }
 
         function createStompClient(reconnected) {
-            var stompClient = stomp.over(new sockjs('/berightthere'));
+            var stompClient = stomp.over(new sockjs('/berightthere'), { heartbeat: false });
             stompClient.connect({}, connectedCallback.bind(this, stompClient, reconnected), errorCallback.bind(this, stompClient));
 
             return stompClient;
