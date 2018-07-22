@@ -9,18 +9,10 @@ import java.io.Serializable;
 @Table(name = "location")
 public class LocationEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
-
-    @Column(name = "trip_id")
-    @JsonIgnore
     private long tripId;
-
     private double latitude;
     private double longitude;
-
     private Double accuracy;
 
     protected LocationEntity() {
@@ -34,6 +26,9 @@ public class LocationEntity implements Serializable {
         this.accuracy = accuracy;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     public Long getId() {
         return id;
     }
@@ -42,6 +37,8 @@ public class LocationEntity implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "trip_id")
+    @JsonIgnore
     public long getTripId() {
         return tripId;
     }

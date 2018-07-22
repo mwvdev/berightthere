@@ -10,16 +10,8 @@ import java.util.List;
 @Table(name = "trip")
 public class TripEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
-
-    @Column(nullable = false)
     private String tripIdentifier;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "trip_id")
     private List<LocationEntity> locations;
 
     protected TripEntity() {
@@ -30,6 +22,9 @@ public class TripEntity implements Serializable {
         this.tripIdentifier = tripIdentifier;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     public Long getId() {
         return id;
     }
@@ -38,6 +33,7 @@ public class TripEntity implements Serializable {
         this.id = id;
     }
 
+    @Column(nullable = false)
     public String getTripIdentifier() {
         return tripIdentifier;
     }
@@ -46,6 +42,8 @@ public class TripEntity implements Serializable {
         this.tripIdentifier = tripIdentifier;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "trip_id")
     public List<LocationEntity> getLocations() {
         return locations;
     }
