@@ -2,10 +2,7 @@ package mwvdev.brt.model;
 
 public class TripIdentifier {
 
-    private String identifier;
-
-    public TripIdentifier() {
-    }
+    private final String identifier;
 
     public TripIdentifier(String identifier) {
         this.identifier = identifier;
@@ -13,10 +10,6 @@ public class TripIdentifier {
 
     public String getIdentifier() {
         return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
 }
