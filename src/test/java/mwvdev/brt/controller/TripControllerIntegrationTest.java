@@ -3,6 +3,7 @@ package mwvdev.brt.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mwvdev.brt.TripTestHelper;
 import mwvdev.brt.model.Location;
+import mwvdev.brt.model.LocationImpl;
 import mwvdev.brt.model.Trip;
 import mwvdev.brt.model.TripIdentifier;
 import mwvdev.brt.service.trip.TripService;
@@ -16,6 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -83,14 +87,18 @@ public class TripControllerIntegrationTest {
 
     @Test
     public void addLocation_WhenInvalidLocations_Throws() throws Exception {
-        this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
-                tripIdentifier, -120, 0)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+        List<Location> locations = Arrays.asList(
+                new LocationImpl(-100, 0, null),
+                new LocationImpl(100, 0, null),
+                new LocationImpl(0, -190, null),
+                new LocationImpl(0, 190, null));
 
-        this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
-                tripIdentifier, 0, 190).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+        for (Location location : locations) {
+            this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
+                    tripIdentifier, location.getLatitude(), location.getLongitude())
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
     @Test
