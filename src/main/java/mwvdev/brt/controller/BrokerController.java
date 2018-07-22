@@ -1,8 +1,9 @@
 package mwvdev.brt.controller;
 
 import mwvdev.brt.model.Location;
-import mwvdev.brt.service.location.TripService;
-import mwvdev.brt.service.location.UnknownTripException;
+import mwvdev.brt.model.Trip;
+import mwvdev.brt.service.trip.TripService;
+import mwvdev.brt.service.trip.UnknownTripException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
@@ -26,7 +27,8 @@ public class BrokerController {
     @Transactional
     public Collection<Location> getLocations(@DestinationVariable("tripIdentifier") String tripIdentifier) {
         try {
-            return tripService.getLocations(tripIdentifier);
+            Trip trip = tripService.getTrip(tripIdentifier);
+            return trip.getLocations();
         }
         catch(UnknownTripException e) {
             return Collections.emptyList();

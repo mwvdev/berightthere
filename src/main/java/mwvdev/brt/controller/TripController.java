@@ -1,9 +1,10 @@
 package mwvdev.brt.controller;
 
 import mwvdev.brt.model.Location;
+import mwvdev.brt.model.Trip;
 import mwvdev.brt.model.TripIdentifier;
-import mwvdev.brt.service.location.TripService;
-import mwvdev.brt.service.location.UnknownTripException;
+import mwvdev.brt.service.trip.TripService;
+import mwvdev.brt.service.trip.UnknownTripException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/trip")
@@ -67,8 +67,8 @@ public class TripController {
     @Transactional
     public ResponseEntity<Collection<Location>> getLocations(@PathVariable String tripIdentifier) {
         try {
-            List<Location> locations = tripService.getLocations(tripIdentifier);
-            return new ResponseEntity<>(locations, HttpStatus.OK);
+            Trip trip = tripService.getTrip(tripIdentifier);
+            return new ResponseEntity<>(trip.getLocations(), HttpStatus.OK);
         }
         catch(UnknownTripException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

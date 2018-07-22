@@ -1,4 +1,4 @@
-package mwvdev.brt.service.location;
+package mwvdev.brt.service.trip;
 
 import mwvdev.brt.entity.LocationEntity;
 import mwvdev.brt.entity.TripEntity;
@@ -6,20 +6,24 @@ import mwvdev.brt.model.Location;
 import mwvdev.brt.model.Trip;
 import mwvdev.brt.repository.TripRepository;
 import mwvdev.brt.service.UuidGenerator;
+import mwvdev.brt.service.mapper.LocationMapper;
+import mwvdev.brt.service.mapper.TripMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TripServiceImpl implements TripService {
 
     private final TripRepository tripRepository;
+    private final TripMapper tripMapper;
+    private final LocationMapper locationMapper;
     private final UuidGenerator uuidGenerator;
 
     @Autowired
-    public TripServiceImpl(TripRepository tripRepository, UuidGenerator uuidGenerator) {
+    public TripServiceImpl(TripRepository tripRepository, TripMapper tripMapper, LocationMapper locationMapper, UuidGenerator uuidGenerator) {
         this.tripRepository = tripRepository;
+        this.tripMapper = tripMapper;
+        this.locationMapper = locationMapper;
         this.uuidGenerator = uuidGenerator;
     }
 
@@ -39,21 +43,21 @@ public class TripServiceImpl implements TripService {
             throw new UnknownTripException();
         }
 
-        LocationEntity location = new LocationEntity(trip.getId(), latitude, longitude, accuracy);
-        trip.getLocationEntities().add(location);
+        LocationEntity locationEntity = new LocationEntity(trip.getId(), latitude, longitude, accuracy);
+        trip.getLocations().add(locationEntity);
         tripRepository.save(trip);
 
-        return location;
+        return locationMapper.toLocation(locationEntity);
     }
 
     @Override
-    public List<Location> getLocations(String tripIdentifier) {
-        Trip trip = tripRepository.findByTripIdentifier(tripIdentifier);
-        if(trip == null) {
+    public Trip getTrip(String tripIdentifier) {
+        TripEntity tripEntity = tripRepository.findByTripIdentifier(tripIdentifier);
+        if(tripEntity == null) {
             throw new UnknownTripException();
         }
 
-        return trip.getLocations();
+        return tripMapper.toTrip(tripEntity);
     }
 
 }

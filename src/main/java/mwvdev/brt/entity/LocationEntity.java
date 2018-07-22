@@ -1,14 +1,13 @@
 package mwvdev.brt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import mwvdev.brt.model.Location;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "location")
-public class LocationEntity implements Serializable, Location {
+public class LocationEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +50,6 @@ public class LocationEntity implements Serializable, Location {
         this.tripId = tripId;
     }
 
-    @Override
     public double getLatitude() {
         return latitude;
     }
@@ -60,7 +58,6 @@ public class LocationEntity implements Serializable, Location {
         this.latitude = latitude;
     }
 
-    @Override
     public double getLongitude() {
         return longitude;
     }
@@ -69,7 +66,6 @@ public class LocationEntity implements Serializable, Location {
         this.longitude = longitude;
     }
 
-    @Override
     public Double getAccuracy() {
         return accuracy;
     }

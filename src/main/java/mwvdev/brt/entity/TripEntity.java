@@ -1,17 +1,14 @@
 package mwvdev.brt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import mwvdev.brt.model.Location;
-import mwvdev.brt.model.Trip;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "trip")
-public class TripEntity implements Serializable, Trip {
+public class TripEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +20,7 @@ public class TripEntity implements Serializable, Trip {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "trip_id")
-    private List<LocationEntity> locationEntities;
+    private List<LocationEntity> locations;
 
     protected TripEntity() {
 
@@ -41,7 +38,6 @@ public class TripEntity implements Serializable, Trip {
         this.id = id;
     }
 
-    @Override
     public String getTripIdentifier() {
         return tripIdentifier;
     }
@@ -50,17 +46,12 @@ public class TripEntity implements Serializable, Trip {
         this.tripIdentifier = tripIdentifier;
     }
 
-    @Override
-    public List<Location> getLocations() {
-        return new ArrayList<>(locationEntities);
+    public List<LocationEntity> getLocations() {
+        return locations;
     }
 
-    public List<LocationEntity> getLocationEntities() {
-        return locationEntities;
-    }
-
-    public void setLocationEntities(List<LocationEntity> locationEntities) {
-        this.locationEntities = locationEntities;
+    public void setLocations(List<LocationEntity> locations) {
+        this.locations = locations;
     }
 
 }

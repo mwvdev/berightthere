@@ -3,16 +3,13 @@ package mwvdev.brt.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mwvdev.brt.TripTestHelper;
 import mwvdev.brt.configuration.WebSocketConfiguration;
-import mwvdev.brt.entity.TripEntity;
-import mwvdev.brt.service.location.TripService;
+import mwvdev.brt.model.Trip;
+import mwvdev.brt.service.trip.TripService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -20,6 +17,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.AbstractSubscribableChannel;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -30,10 +28,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { BrokerController.class, WebSocketConfiguration.class })
 @JsonTest
 public class BrokerControllerIntegrationTest {
 
@@ -59,9 +59,9 @@ public class BrokerControllerIntegrationTest {
         String sessionId = "SessionId";
         String destination = "/app/trip." + tripIdentifier + ".locations";
 
-        TripEntity tripEntity = TripTestHelper.createTripEntity(tripIdentifier);
-        given(tripService.getLocations(tripIdentifier)).willReturn(tripEntity.getLocations());
-        String expectedPayload = objectMapper.writeValueAsString(tripEntity.getLocations());
+        Trip trip = TripTestHelper.createTrip(tripIdentifier);
+        when(tripService.getTrip(tripIdentifier)).thenReturn(trip);
+        String expectedPayload = objectMapper.writeValueAsString(trip.getLocations());
 
         StompHeaderAccessor headers = StompHeaderAccessor.create(StompCommand.SUBSCRIBE);
         headers.setSubscriptionId(subscriptionId);
@@ -84,6 +84,8 @@ public class BrokerControllerIntegrationTest {
         this.clientInboundChannel.send(message);
 
         Message<?> actualMessage = messages.poll(10, TimeUnit.SECONDS);
+        assertThat(actualMessage, is(notNullValue()));
+
         StompHeaderAccessor actualHeaders = StompHeaderAccessor.wrap(actualMessage);
 
         assertThat(actualHeaders.getSubscriptionId(), is(subscriptionId));
@@ -95,12 +97,4 @@ public class BrokerControllerIntegrationTest {
         assertThat(actualPayload, is(expectedPayload));
     }
 
-    @Configuration
-    @ComponentScan(
-            basePackages = "mwvdev.brt",
-            includeFilters = { @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {BrokerController.class, WebSocketConfiguration.class} ) },
-            useDefaultFilters = false)
-    static class TestConfiguration {
-
-    }
 }

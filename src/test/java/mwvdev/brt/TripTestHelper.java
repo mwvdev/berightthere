@@ -2,6 +2,10 @@ package mwvdev.brt;
 
 import mwvdev.brt.entity.LocationEntity;
 import mwvdev.brt.entity.TripEntity;
+import mwvdev.brt.model.Location;
+import mwvdev.brt.model.LocationImpl;
+import mwvdev.brt.model.Trip;
+import mwvdev.brt.model.TripImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,10 +13,20 @@ import java.util.List;
 
 public final class TripTestHelper {
 
+    public static Trip createTrip(String tripIdentifier) {
+        return new TripImpl(tripIdentifier, createLocations());
+    }
+
+    private static List<Location> createLocations() {
+        return new ArrayList<>(Arrays.asList(new LocationImpl(55.6739062, 12.5556993, 7.5),
+                new LocationImpl(55.6746322, 12.5585318, 5.2),
+                new LocationImpl(55.6764229, 12.5588751, 3.3)));
+    }
+
     public static TripEntity createTripEntity(String tripIdentifier) {
         TripEntity trip = new TripEntity(tripIdentifier);
         trip.setId(42L);
-        trip.setLocationEntities(createLocationEntities(trip));
+        trip.setLocations(createLocationEntities(trip));
         return trip;
     }
 

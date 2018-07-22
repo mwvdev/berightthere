@@ -2,11 +2,11 @@ package mwvdev.brt.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mwvdev.brt.TripTestHelper;
-import mwvdev.brt.entity.LocationEntity;
-import mwvdev.brt.entity.TripEntity;
+import mwvdev.brt.model.Location;
+import mwvdev.brt.model.Trip;
 import mwvdev.brt.model.TripIdentifier;
-import mwvdev.brt.service.location.TripService;
-import mwvdev.brt.service.location.UnknownTripException;
+import mwvdev.brt.service.trip.TripService;
+import mwvdev.brt.service.trip.UnknownTripException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,44 +45,47 @@ public class TripControllerIntegrationTest {
 
     @Test
     public void canCheckin() throws Exception {
-        given(tripService.checkin()).willReturn(tripIdentifier);
+        when(tripService.checkin()).thenReturn(tripIdentifier);
 
         String expectedContent = objectMapper.writeValueAsString(new TripIdentifier(tripIdentifier));
 
-        this.mvc.perform(get("/api/trip/checkin").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+        this.mvc.perform(get("/api/trip/checkin")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(content().string(expectedContent));
     }
 
     @Test
     public void canAddLocation() throws Exception {
-        LocationEntity locationEntity = new LocationEntity(1, latitude, longitude, accuracy);
-        given(tripService.addLocation(tripIdentifier, latitude, longitude, null)).willReturn(
-                locationEntity);
+        Location location = mock(Location.class);
+        when(tripService.addLocation(tripIdentifier, latitude, longitude, null)).thenReturn(location);
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
-                tripIdentifier, latitude, longitude).accept(MediaType.APPLICATION_JSON))
+                tripIdentifier, latitude, longitude)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(simpMessagingTemplate).convertAndSend("/topic/" + tripIdentifier, locationEntity);
+        verify(simpMessagingTemplate).convertAndSend("/topic/" + tripIdentifier, location);
     }
 
     @Test
     public void canAddLocationWithOptionalParameters() throws Exception {
-        LocationEntity locationEntity = new LocationEntity(1, latitude, longitude, accuracy);
-        given(tripService.addLocation(tripIdentifier, latitude, longitude, accuracy)).willReturn(
-                locationEntity);
+        Location location = mock(Location.class);
+        when(tripService.addLocation(tripIdentifier, latitude, longitude, accuracy)).thenReturn(location);
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}?accuracy={accuracy}",
-                tripIdentifier, latitude, longitude, accuracy).accept(MediaType.APPLICATION_JSON))
+                tripIdentifier, latitude, longitude, accuracy)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(simpMessagingTemplate).convertAndSend("/topic/" + tripIdentifier, locationEntity);
+        verify(simpMessagingTemplate).convertAndSend("/topic/" + tripIdentifier, location);
     }
 
     @Test
     public void addLocation_WhenInvalidLocations_Throws() throws Exception {
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
-                tripIdentifier, -120, 0).accept(MediaType.APPLICATION_JSON))
+                tripIdentifier, -120, 0)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
@@ -93,29 +95,33 @@ public class TripControllerIntegrationTest {
 
     @Test
     public void addLocation_WhenUnknownTrip_Throws() throws Exception {
-        given(tripService.addLocation(tripIdentifier, latitude, longitude, null)).willThrow(UnknownTripException.class);
+        when(tripService.addLocation(tripIdentifier, latitude, longitude, null)).thenThrow(UnknownTripException.class);
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
-                tripIdentifier, latitude, longitude).accept(MediaType.APPLICATION_JSON))
+                tripIdentifier, latitude, longitude)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     public void canGetLocations() throws Exception {
-        TripEntity tripEntity = TripTestHelper.createTripEntity(tripIdentifier);
-        given(tripService.getLocations(tripIdentifier)).willReturn(tripEntity.getLocations());
+        Trip trip = TripTestHelper.createTrip(tripIdentifier);
+        when(tripService.getTrip(tripIdentifier)).thenReturn(trip);
 
-        String expectedContent = objectMapper.writeValueAsString(tripEntity.getLocations());
+        String expectedContent = objectMapper.writeValueAsString(trip.getLocations());
 
-        this.mvc.perform(get("/api/trip/{tripIdentifier}/locations", tripIdentifier).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().string(expectedContent));
+        this.mvc.perform(get("/api/trip/{tripIdentifier}/locations", tripIdentifier)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedContent));
     }
 
     @Test
     public void getLocations_WhenUnknownTrip_ReturnsNotFound() throws Exception {
-        given(tripService.getLocations(tripIdentifier)).willThrow(new UnknownTripException());
+        when(tripService.getTrip(tripIdentifier)).thenThrow(new UnknownTripException());
 
-        this.mvc.perform(get("/api/trip/{tripIdentifier}/locations", tripIdentifier).accept(MediaType.APPLICATION_JSON))
+        this.mvc.perform(get("/api/trip/{tripIdentifier}/locations", tripIdentifier)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
     
