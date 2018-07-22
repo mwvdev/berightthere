@@ -21,6 +21,8 @@ cache:
     - $HOME/.gradle/wrapper/
 
 after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
   - export REPO=mwvdev/berightthere
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
   - export JAR_FILE=$(ls ./build/libs/berightthere-*.jar)
