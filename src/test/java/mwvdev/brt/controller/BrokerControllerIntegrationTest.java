@@ -1,10 +1,12 @@
 package mwvdev.brt.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mwvdev.brt.TripTestHelper;
 import mwvdev.brt.configuration.WebSocketConfiguration;
 import mwvdev.brt.model.Trip;
 import mwvdev.brt.service.trip.TripService;
+import mwvdev.brt.service.trip.UnknownTripException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -52,25 +55,40 @@ public class BrokerControllerIntegrationTest {
     private final BlockingQueue<Message<?>> messages = new ArrayBlockingQueue<>(64);
 
     private static final String tripIdentifier = "0c98b95e-848f-4589-a7f9-dcc7dde95725";
+    private static final String subscriptionId = "SubscriptionId";
+    private static final String sessionId = "SessionId";
+    private static final String destination = "/app/trip." + tripIdentifier + ".locations";
 
     @Test
     public void canGetLocations() throws InterruptedException, IOException {
-        String subscriptionId = "SubscriptionId";
-        String sessionId = "SessionId";
-        String destination = "/app/trip." + tripIdentifier + ".locations";
-
         Trip trip = TripTestHelper.createTrip(tripIdentifier);
         when(tripService.getTrip(tripIdentifier)).thenReturn(trip);
         String expectedPayload = objectMapper.writeValueAsString(trip.getLocations());
 
-        StompHeaderAccessor headers = StompHeaderAccessor.create(StompCommand.SUBSCRIBE);
-        headers.setSubscriptionId(subscriptionId);
-        headers.setSessionId(sessionId);
-        headers.setDestination(destination);
-        headers.setSessionAttributes(new HashMap<>());
-        Message<byte[]> message = MessageBuilder.createMessage(new byte[0], headers.getMessageHeaders());
+        clientOutboundChannel.addInterceptor(createChannelInterceptor(messages));
 
-        clientOutboundChannel.addInterceptor(new ChannelInterceptor() {
+        this.clientInboundChannel.send(createMessage(createHeader(subscriptionId, sessionId, destination)));
+
+        Message<?> actualMessage = messages.poll(10, TimeUnit.SECONDS);
+        verifyMessage(expectedPayload, actualMessage);
+    }
+
+    @Test
+    public void getLocations_WhenUnknownTrip_ReturnsEmptyCollection() throws InterruptedException, JsonProcessingException {
+        when(tripService.getTrip(tripIdentifier)).thenThrow(UnknownTripException.class);
+        String expectedPayload = objectMapper.writeValueAsString(Collections.emptyList());
+
+        clientOutboundChannel.addInterceptor(createChannelInterceptor(messages));
+
+        this.clientInboundChannel.send(createMessage(createHeader(subscriptionId, sessionId, destination)));
+
+        Message<?> actualMessage = messages.poll(10, TimeUnit.SECONDS);
+        verifyMessage(expectedPayload, actualMessage);
+
+    }
+
+    private ChannelInterceptor createChannelInterceptor(BlockingQueue<Message<?>> messages) {
+        return new ChannelInterceptor() {
 
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -79,22 +97,35 @@ public class BrokerControllerIntegrationTest {
                 return message;
             }
 
-        });
+        };
+    }
 
-        this.clientInboundChannel.send(message);
+    private Message<byte[]> createMessage(StompHeaderAccessor headers) {
+        return MessageBuilder.createMessage(new byte[0], headers.getMessageHeaders());
+    }
 
-        Message<?> actualMessage = messages.poll(10, TimeUnit.SECONDS);
+    private StompHeaderAccessor createHeader(String subscriptionId, String sessionId, String destination) {
+        StompHeaderAccessor header = StompHeaderAccessor.create(StompCommand.SUBSCRIBE);
+        header.setSubscriptionId(subscriptionId);
+        header.setSessionId(sessionId);
+        header.setDestination(destination);
+        header.setSessionAttributes(new HashMap<>());
+
+        return header;
+    }
+
+    private void verifyMessage(String expectedPayload, Message<?> actualMessage) {
         assertThat(actualMessage, is(notNullValue()));
-
         StompHeaderAccessor actualHeaders = StompHeaderAccessor.wrap(actualMessage);
-
         assertThat(actualHeaders.getSubscriptionId(), is(subscriptionId));
         assertThat(actualHeaders.getSessionId(), is(sessionId));
         assertThat(actualHeaders.getDestination(), is(destination));
 
-        String actualPayload = new String((byte[]) actualMessage.getPayload(), Charset.forName("UTF-8"));
-
+        String actualPayload = getPayload(actualMessage);
         assertThat(actualPayload, is(expectedPayload));
     }
 
+    private String getPayload(Message<?> actualMessage) {
+        return new String((byte[]) actualMessage.getPayload(), Charset.forName("UTF-8"));
+    }
 }
