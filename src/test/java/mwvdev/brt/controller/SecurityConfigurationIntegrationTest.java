@@ -94,6 +94,33 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
         assertThat(HttpStatus.OK, is(response.getStatusCode()));
     }
 
+    @Test
+    public void getPrometheusRefusesAcccessWhenAnonymous() throws IllegalStateException {
+        TestRestTemplate restTemplate = getAnonymousRestTemplate();
+
+        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
+
+        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
+    }
+
+    @Test
+    public void getPrometheusRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
+        TestRestTemplate restTemplate = getRestTemplateWithInvalidCredentials();
+
+        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
+
+        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
+    }
+
+    @Test
+    public void canGetPrometheusWhenAuthenticated() throws IllegalStateException {
+        TestRestTemplate restTemplate = getRestTemplateWithValidCredentials();
+
+        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
+
+        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+    }
+
     private TestRestTemplate getAnonymousRestTemplate() {
         return new TestRestTemplate();
     }
