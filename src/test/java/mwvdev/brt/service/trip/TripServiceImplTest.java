@@ -8,15 +8,12 @@ import mwvdev.brt.model.Trip;
 import mwvdev.brt.repository.TripRepository;
 import mwvdev.brt.service.UuidGenerator;
 import mwvdev.brt.service.mapper.LocationMapper;
-import mwvdev.brt.service.mapper.LocationMapperImpl;
 import mwvdev.brt.service.mapper.TripMapper;
-import mwvdev.brt.service.mapper.TripMapperImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
@@ -28,7 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TripMapperImpl.class, LocationMapperImpl.class })
 public class TripServiceImplTest {
 
     private TripService tripService;
