@@ -26,8 +26,8 @@ public class CorsConfigurationIntegrationTest extends BaseIntegrationTest {
         RequestEntity requestEntity = RequestEntity.get(getUri("api/trip/checkin")).header(HttpHeaders.ORIGIN, "http://example.org").build();
         ResponseEntity response = restTemplate.exchange(requestEntity, String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
-        assertThat("*", is(response.getHeaders().getAccessControlAllowOrigin()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        assertThat(response.getHeaders().getAccessControlAllowOrigin(), is("*"));
     }
 
 }

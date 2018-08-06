@@ -28,7 +28,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/checkin"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -37,7 +37,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/addLocation/55.6745/12.56"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/locations"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity response = restTemplate.getForEntity(getUri("trip/ab7d8df0-e952-4956-8c38-0351b90fd045"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/health"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
-        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
-        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
 
-        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
 
-        assertThat(HttpStatus.UNAUTHORIZED, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
 
-        assertThat(HttpStatus.OK, is(response.getStatusCode()));
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     private TestRestTemplate getAnonymousRestTemplate() {
