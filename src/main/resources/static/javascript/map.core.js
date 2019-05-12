@@ -2,44 +2,40 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
     var map;
     var travelPath;
     var positionMarker;
+    var boundedMarkers = new Set();
 
     var config = module.config();
     var eventEmitter = new EventEmitter();
     eventEmitter.addListener(mapEvents.location.received, function(location) {
-         addTravelPathLocation(travelPath, location);
-         updatePositionMarker(positionMarker, location);
-     });
+        travelPath.addLatLng([location.latitude, location.longitude]);
+        positionMarker.setLatLng([location.latitude, location.longitude])
+    });
 
     eventEmitter.addListener(mapEvents.websocket.reconnected, function(locations) {
         travelPath.remove();
-        travelPath = createTravelPath(map, locations);
+        travelPath = createTravelPath(map, locations, { color: '#00a2e8' });
 
-        updatePositionMarker(positionMarker, locations[locations.length-1]);
+        var latestLocation = locations[locations.length-1];
+        positionMarker.setLatLng([latestLocation.latitude, latestLocation.longitude])
     });
 
-    function createTravelPath(map, locations) {
-        var latLngs = locations.map(function(location) {
-            return [location.latitude, location.longitude];
+    eventEmitter.addListener(mapEvents.viewport.boundedMarkerCreated, function(marker) {
+        boundedMarkers.add(marker);
+    });
+    eventEmitter.addListener(mapEvents.viewport.boundedMarkerRemoved, function(marker) {
+        boundedMarkers.delete(marker);
+    });
+    eventEmitter.addListener(mapEvents.viewport.staleBounds, function() {
+        var travelPathBounds = travelPath.getBounds();
+
+        var bounds = L.latLngBounds(travelPathBounds.getNorthEast(), travelPathBounds.getSouthWest());
+
+        boundedMarkers.forEach(function(boundedMarker) {
+            bounds.extend(boundedMarker.getLatLng());
         });
 
-        return L.polyline(latLngs, {color: '#00a2e8'}).addTo(map);
-    }
-
-    function addTravelPathLocation(travelPath, location) {
-        travelPath.addLatLng(L.latLng([location.latitude, location.longitude]));
-    }
-
-    function createPositionMarker(map, location) {
-        return L.marker([location.latitude, location.longitude]).addTo(map);
-    }
-
-    function updatePositionMarker(positionMarker, location) {
-        positionMarker.setLatLng([location.latitude, location.longitude]);
-    }
-
-    function fitBounds() {
-        map.fitBounds(travelPath.getBounds());
-    }
+        map.fitBounds(bounds);
+    });
 
     function initMap(locations) {
         map = L.map('map');
@@ -51,15 +47,25 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
         map.setView([55.676, 12.568], 9);
         map.addLayer(osm);
 
-        travelPath = createTravelPath(map, locations);
-        fitBounds();
-        positionMarker = createPositionMarker(map, locations[locations.length-1]);
+        travelPath = createTravelPath(map, locations, { color: '#00a2e8' });
+
+        var latestLocation = locations[locations.length-1];
+        positionMarker = L.marker([latestLocation.latitude, latestLocation.longitude]).addTo(map);
+
+        eventEmitter.emit(mapEvents.viewport.staleBounds);
+    }
+
+    function createTravelPath(map, locations, options) {
+        var latLngs = locations.map(function(location) {
+            return [location.latitude, location.longitude];
+        });
+
+        return L.polyline(latLngs, options).addTo(map);
     }
 
     initMap(config.locations);
 
     return {
-        fitBounds: fitBounds,
         getEventEmitter: function() { return eventEmitter; },
         getInstance: function() { return map; }
     };

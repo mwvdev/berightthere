@@ -7,6 +7,12 @@ html, body, #map {
     width: 100%;
 }
 
-#map .auto-focus.focusing > i {
+#map .auto-focus.focusing > i,
+#map .visitor-location.following > i {
     color: green;
+}
+
+#map .visitor-location > i {
+    font-size: 18px;
+    line-height: 28px;
 }
