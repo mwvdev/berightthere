@@ -23,7 +23,10 @@ define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
     }
 
     function followVisitorLocation() {
-        var positionOptions = { enableHighAccuracy: true };
+        var positionOptions = {
+            enableHighAccuracy: true,
+            maximumAge: 15000
+        };
 
         watchId = navigator.geolocation.watchPosition(function (position) {
             var location = position.coords;
