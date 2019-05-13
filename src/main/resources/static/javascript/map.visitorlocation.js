@@ -1,5 +1,5 @@
 define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
-    if(!"geolocation" in navigator) {
+    if(!navigator.geolocation) {
         return;
     }
 
