@@ -60,4 +60,8 @@ jacocoTestReport {
     }
 }
 
-check.dependsOn jacocoTestReport
+test {
+    useJUnitPlatform()
+
+    finalizedBy(jacocoTestReport)
+}
