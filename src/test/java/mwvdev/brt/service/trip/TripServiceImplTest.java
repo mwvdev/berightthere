@@ -9,23 +9,23 @@ import mwvdev.brt.repository.TripRepository;
 import mwvdev.brt.service.UuidGenerator;
 import mwvdev.brt.service.mapper.LocationMapper;
 import mwvdev.brt.service.mapper.TripMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-public class TripServiceImplTest {
+@SpringBootTest(classes = TripServiceImpl.class)
+class TripServiceImplTest {
 
     private TripService tripService;
 
@@ -46,13 +46,13 @@ public class TripServiceImplTest {
     private static final double longitude = 12.5714064;
     private static final double accuracy = 0.92;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         tripService = new TripServiceImpl(tripRepository, tripMapper, locationMapper, uuidGenerator);
     }
 
     @Test
-    public void canCheckin() {
+    void canCheckin() {
         when(uuidGenerator.generate()).thenReturn(UUID.fromString(tripIdentifier));
 
         String tripIdentifier = tripService.checkin();
@@ -61,7 +61,7 @@ public class TripServiceImplTest {
     }
 
     @Test
-    public void canAddLocation() {
+    void canAddLocation() {
         TripEntity tripEntity = TripTestHelper.createTripEntity(tripIdentifier);
         when(tripRepository.findByTripIdentifier(tripIdentifier)).thenReturn(tripEntity);
         Location expectedLocation = mock(Location.class);
@@ -82,15 +82,16 @@ public class TripServiceImplTest {
         assertThat(createdLocationEntity.getAccuracy(), is(accuracy));
     }
 
-    @Test(expected = UnknownTripException.class)
-    public void addLocation_WhenMissingTrip_Throws() {
+    @Test()
+    void addLocation_WhenMissingTrip_Throws() {
         when(tripRepository.findByTripIdentifier(tripIdentifier)).thenReturn(null);
 
-        tripService.addLocation(tripIdentifier, latitude, longitude, accuracy);
+        assertThrows(UnknownTripException.class, () ->
+                tripService.addLocation(tripIdentifier, latitude, longitude, accuracy));
     }
 
     @Test
-    public void canGetTrip() {
+    void canGetTrip() {
         TripEntity tripEntity = TripTestHelper.createTripEntity(tripIdentifier);
         when(tripRepository.findByTripIdentifier(tripIdentifier)).thenReturn(tripEntity);
         Trip expectedTrip = TripTestHelper.createTrip(tripIdentifier);
@@ -101,10 +102,11 @@ public class TripServiceImplTest {
         assertThat(actualTrip, is(expectedTrip));
     }
 
-    @Test(expected = UnknownTripException.class)
-    public void getTrip_WhenMissingTrip_Throws() {
+    @Test()
+    void getTrip_WhenMissingTrip_Throws() {
         when(tripRepository.findByTripIdentifier(tripIdentifier)).thenReturn(null);
 
-        tripService.getTrip(tripIdentifier);
+        assertThrows(UnknownTripException.class, () -> tripService.getTrip(tripIdentifier));
     }
+    
 }

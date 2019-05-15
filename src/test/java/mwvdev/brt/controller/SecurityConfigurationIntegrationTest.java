@@ -1,7 +1,6 @@
 package mwvdev.brt.controller;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,21 +8,19 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
+class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
 {
 
     @Autowired
     private SecurityProperties securityProperties;
 
     @Test
-    public void canCheckinAnynomously() throws IllegalStateException {
+    void canCheckinAnynomously() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/checkin"), String.class);
@@ -32,7 +29,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void canAddLocationAnonymously() throws IllegalStateException {
+    void canAddLocationAnonymously() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/addLocation/55.6745/12.56"), String.class);
@@ -41,7 +38,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void canListLocations() throws IllegalStateException {
+    void canListLocations() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/locations"), String.class);
@@ -50,7 +47,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void canViewTrip() throws IllegalStateException {
+    void canViewTrip() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity response = restTemplate.getForEntity(getUri("trip/ab7d8df0-e952-4956-8c38-0351b90fd045"), String.class);
@@ -59,7 +56,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void canGetHealthAnynomously() throws IllegalStateException {
+    void canGetHealthAnynomously() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/health"), String.class);
@@ -68,7 +65,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void getMetricsRefusesAcccessWhenAnonymous() throws IllegalStateException {
+    void getMetricsRefusesAcccessWhenAnonymous() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
@@ -77,7 +74,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void getMetricsRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
+    void getMetricsRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
         TestRestTemplate restTemplate = getRestTemplateWithInvalidCredentials();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
@@ -86,7 +83,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void canGetMetricsWhenAuthenticated() throws IllegalStateException {
+    void canGetMetricsWhenAuthenticated() throws IllegalStateException {
         TestRestTemplate restTemplate = getRestTemplateWithValidCredentials();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
@@ -95,7 +92,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void getPrometheusRefusesAcccessWhenAnonymous() throws IllegalStateException {
+    void getPrometheusRefusesAcccessWhenAnonymous() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
@@ -104,7 +101,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void getPrometheusRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
+    void getPrometheusRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
         TestRestTemplate restTemplate = getRestTemplateWithInvalidCredentials();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
@@ -113,7 +110,7 @@ public class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     }
 
     @Test
-    public void canGetPrometheusWhenAuthenticated() throws IllegalStateException {
+    void canGetPrometheusWhenAuthenticated() throws IllegalStateException {
         TestRestTemplate restTemplate = getRestTemplateWithValidCredentials();
 
         ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);

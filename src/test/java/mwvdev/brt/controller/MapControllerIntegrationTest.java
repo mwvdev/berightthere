@@ -4,13 +4,11 @@ import mwvdev.brt.TripTestHelper;
 import mwvdev.brt.model.Trip;
 import mwvdev.brt.service.trip.TripService;
 import mwvdev.brt.service.trip.UnknownTripException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
@@ -18,9 +16,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(value = MapController.class, secure = false)
-public class MapControllerIntegrationTest {
+@WebMvcTest(MapController.class)
+class MapControllerIntegrationTest {
 
     @MockBean
     private TripService tripService;
@@ -31,7 +28,7 @@ public class MapControllerIntegrationTest {
     private static final String tripIdentifier = "ab7d8df0-e952-4956-8c38-0351b90fd045";
 
     @Test
-    public void canViewTrip() throws Exception {
+    void canViewTrip() throws Exception {
         when(tripService.getTrip(tripIdentifier)).thenReturn(TripTestHelper.createTrip(tripIdentifier));
 
         this.mvc.perform(get("/trip/{tripIdentifier}", tripIdentifier)
@@ -41,7 +38,7 @@ public class MapControllerIntegrationTest {
     }
 
     @Test
-    public void viewTrip_WhenUnknownTrip_RendersUnknownView() throws Exception {
+    void viewTrip_WhenUnknownTrip_RendersUnknownView() throws Exception {
         when(tripService.getTrip(tripIdentifier)).thenThrow(UnknownTripException.class);
 
         this.mvc.perform(get("/trip/{tripIdentifier}", tripIdentifier)
@@ -51,7 +48,7 @@ public class MapControllerIntegrationTest {
     }
 
     @Test
-    public void viewTrip_WhenUnknownTrip_RendersWaitingView() throws Exception {
+    void viewTrip_WhenUnknownTrip_RendersWaitingView() throws Exception {
         Trip trip = TripTestHelper.createTrip(tripIdentifier);
         trip.getLocations().clear();
         when(tripService.getTrip(tripIdentifier)).thenReturn(trip);

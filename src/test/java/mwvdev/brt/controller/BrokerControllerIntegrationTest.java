@@ -7,8 +7,7 @@ import mwvdev.brt.configuration.WebSocketConfiguration;
 import mwvdev.brt.model.Trip;
 import mwvdev.brt.service.trip.TripService;
 import mwvdev.brt.service.trip.UnknownTripException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +19,6 @@ import org.springframework.messaging.support.AbstractSubscribableChannel;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -32,13 +30,12 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { BrokerController.class, WebSocketConfiguration.class })
 @JsonTest
-public class BrokerControllerIntegrationTest {
+class BrokerControllerIntegrationTest {
 
     @Autowired
     private AbstractSubscribableChannel clientInboundChannel;
@@ -60,7 +57,7 @@ public class BrokerControllerIntegrationTest {
     private static final String destination = "/app/trip." + tripIdentifier + ".locations";
 
     @Test
-    public void canGetLocations() throws InterruptedException, IOException {
+    void canGetLocations() throws InterruptedException, IOException {
         Trip trip = TripTestHelper.createTrip(tripIdentifier);
         when(tripService.getTrip(tripIdentifier)).thenReturn(trip);
         String expectedPayload = objectMapper.writeValueAsString(trip.getLocations());
@@ -74,7 +71,7 @@ public class BrokerControllerIntegrationTest {
     }
 
     @Test
-    public void getLocations_WhenUnknownTrip_ReturnsEmptyCollection() throws InterruptedException, JsonProcessingException {
+    void getLocations_WhenUnknownTrip_ReturnsEmptyCollection() throws InterruptedException, JsonProcessingException {
         when(tripService.getTrip(tripIdentifier)).thenThrow(UnknownTripException.class);
         String expectedPayload = objectMapper.writeValueAsString(Collections.emptyList());
 
@@ -128,4 +125,5 @@ public class BrokerControllerIntegrationTest {
     private String getPayload(Message<?> actualMessage) {
         return new String((byte[]) actualMessage.getPayload(), Charset.forName("UTF-8"));
     }
+
 }

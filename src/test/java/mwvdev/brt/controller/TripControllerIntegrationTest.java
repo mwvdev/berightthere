@@ -8,27 +8,25 @@ import mwvdev.brt.model.Trip;
 import mwvdev.brt.model.TripIdentifier;
 import mwvdev.brt.service.trip.TripService;
 import mwvdev.brt.service.trip.UnknownTripException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(value = TripController.class, secure = false)
-public class TripControllerIntegrationTest {
+@WebMvcTest(TripController.class)
+class TripControllerIntegrationTest {
 
     @MockBean
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -48,7 +46,7 @@ public class TripControllerIntegrationTest {
     private static final double accuracy = 15.23;
 
     @Test
-    public void canCheckin() throws Exception {
+    void canCheckin() throws Exception {
         when(tripService.checkin()).thenReturn(tripIdentifier);
 
         String expectedContent = objectMapper.writeValueAsString(new TripIdentifier(tripIdentifier));
@@ -60,7 +58,7 @@ public class TripControllerIntegrationTest {
     }
 
     @Test
-    public void canAddLocation() throws Exception {
+    void canAddLocation() throws Exception {
         Location location = mock(Location.class);
         when(tripService.addLocation(tripIdentifier, latitude, longitude, null)).thenReturn(location);
 
@@ -73,7 +71,7 @@ public class TripControllerIntegrationTest {
     }
 
     @Test
-    public void canAddLocationWithOptionalParameters() throws Exception {
+    void canAddLocationWithOptionalParameters() throws Exception {
         Location location = mock(Location.class);
         when(tripService.addLocation(tripIdentifier, latitude, longitude, accuracy)).thenReturn(location);
 
@@ -85,24 +83,25 @@ public class TripControllerIntegrationTest {
         verify(simpMessagingTemplate).convertAndSend("/topic/" + tripIdentifier, location);
     }
 
-    @Test
-    public void addLocation_WhenInvalidLocations_Throws() throws Exception {
-        List<Location> locations = Arrays.asList(
+    @ParameterizedTest
+    @MethodSource("provideInvalidLocations")
+    void addLocation_WhenInvalidLocations_Throws(Location location) throws Exception {
+        this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
+                tripIdentifier, location.getLatitude(), location.getLongitude())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    private static Stream<Location> provideInvalidLocations() {
+        return Stream.of(
                 new LocationImpl(-100, 0, null),
                 new LocationImpl(100, 0, null),
                 new LocationImpl(0, -190, null),
                 new LocationImpl(0, 190, null));
-
-        for (Location location : locations) {
-            this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
-                    tripIdentifier, location.getLatitude(), location.getLongitude())
-                    .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isBadRequest());
-        }
     }
 
     @Test
-    public void addLocation_WhenUnknownTrip_Throws() throws Exception {
+    void addLocation_WhenUnknownTrip_Throws() throws Exception {
         when(tripService.addLocation(tripIdentifier, latitude, longitude, null)).thenThrow(UnknownTripException.class);
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/addLocation/{latitude}/{longitude}",
@@ -112,7 +111,7 @@ public class TripControllerIntegrationTest {
     }
 
     @Test
-    public void canGetLocations() throws Exception {
+    void canGetLocations() throws Exception {
         Trip trip = TripTestHelper.createTrip(tripIdentifier);
         when(tripService.getTrip(tripIdentifier)).thenReturn(trip);
 
@@ -125,7 +124,7 @@ public class TripControllerIntegrationTest {
     }
 
     @Test
-    public void getLocations_WhenUnknownTrip_ReturnsNotFound() throws Exception {
+    void getLocations_WhenUnknownTrip_ReturnsNotFound() throws Exception {
         when(tripService.getTrip(tripIdentifier)).thenThrow(new UnknownTripException());
 
         this.mvc.perform(get("/api/trip/{tripIdentifier}/locations", tripIdentifier)

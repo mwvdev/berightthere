@@ -1,9 +1,10 @@
 buildscript {
     repositories {
+        maven { url 'https://repo.spring.io/milestone' }
         mavenCentral()
     }
     dependencies {
-        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE')
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.2.0.M3')
     }
 }
 
@@ -19,13 +20,14 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+    maven { url 'https://repo.spring.io/milestone' }
     mavenCentral()
 }
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation('org.springframework.boot:spring-boot-starter-security')
     implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-websocket')
@@ -41,11 +43,14 @@ dependencies {
 
     runtime('com.h2database:h2')
     runtime('org.postgresql:postgresql')
-    runtime("io.micrometer:micrometer-registry-prometheus")
+    runtime('io.micrometer:micrometer-registry-prometheus')
     //runtime('org.springframework.boot:spring-boot-devtools')
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-    testImplementation("org.apache.httpcomponents:httpclient")
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'junit', module: 'junit'
+    }
+    testImplementation('org.apache.httpcomponents:httpclient')
 }
 
 jacocoTestReport {

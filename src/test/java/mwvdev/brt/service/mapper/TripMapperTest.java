@@ -5,32 +5,28 @@ import mwvdev.brt.entity.LocationEntity;
 import mwvdev.brt.entity.TripEntity;
 import mwvdev.brt.model.Location;
 import mwvdev.brt.model.Trip;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringRunner.class)
-public class TripMapperTest {
-
+class TripMapperTest {
     private TripMapper tripMapper;
 
     private static final String tripIdentifier = "0c98b95e-848f-4589-a7f9-dcc7dde95725";
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         LocationMapper locationMapper = new LocationMapperImpl();
         tripMapper = new TripMapperImpl(locationMapper);
     }
 
     @Test
-    public void canMapToTrip() {
+    void canMapToTrip() {
         TripEntity tripEntity = TripTestHelper.createTripEntity(tripIdentifier);
         List<LocationEntity> locationEntities = tripEntity.getLocations();
 
@@ -49,4 +45,5 @@ public class TripMapperTest {
             assertThat(currentLocation.getAccuracy(), is(currentLocationEntity.getAccuracy()));
         });
     }
+
 }

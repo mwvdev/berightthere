@@ -39,4 +39,5 @@ public final class TripTestHelper {
     private TripTestHelper() {
 
     }
+
 }

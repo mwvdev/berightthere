@@ -1,18 +1,15 @@
 package mwvdev.brt.repository;
 
 import mwvdev.brt.entity.TripEntity;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
-public class TripRepositoryTest {
+class TripRepositoryTest {
 
     @Autowired
     private TripRepository repository;
@@ -20,7 +17,7 @@ public class TripRepositoryTest {
     private static final String tripIdentifier = "ab7d8df0-e952-4956-8c38-0351b90fd045";
 
     @Test
-    public void canFindTripByIdentifier() {
+    void canFindTripByIdentifier() {
         TripEntity actualTripEntity = repository.findByTripIdentifier(tripIdentifier);
 
         assertThat(actualTripEntity.getTripIdentifier(), is(tripIdentifier));
