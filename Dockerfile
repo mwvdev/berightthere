@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-alpine
 
 ENV JAVA_OPTS=""
 
