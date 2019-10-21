@@ -2,8 +2,8 @@ FROM openjdk:11-jre-slim
 
 ENV JAVA_OPTS=""
 
-RUN addgroup -g 1000 -S berightthere && \
-    adduser -u 1000 -S berightthere -G berightthere
+RUN addgroup --system --gid 1000 berightthere && \
+    adduser --system --uid 1000 --gid 1000 berightthere
 USER berightthere
 
 VOLUME /tmp
