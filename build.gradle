@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE')
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.2.5.RELEASE')
     }
 }
 
@@ -39,10 +39,10 @@ dependencies {
     implementation('org.webjars.bower:sockjs-client:1.1.5')
     implementation('org.webjars.npm:webstomp-client:1.2.4')
 
-    runtime('com.h2database:h2')
-    runtime('org.postgresql:postgresql')
-    runtime('io.micrometer:micrometer-registry-prometheus')
-    //runtime('org.springframework.boot:spring-boot-devtools')
+    runtimeOnly('com.h2database:h2')
+    runtimeOnly('org.postgresql:postgresql')
+
+    //runtimeOnly('org.springframework.boot:spring-boot-devtools')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
