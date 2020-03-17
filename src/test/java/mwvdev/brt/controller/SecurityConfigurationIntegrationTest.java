@@ -64,60 +64,6 @@ class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
-    @Test
-    void getMetricsRefusesAcccessWhenAnonymous() throws IllegalStateException {
-        TestRestTemplate restTemplate = getAnonymousRestTemplate();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
-    }
-
-    @Test
-    void getMetricsRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
-        TestRestTemplate restTemplate = getRestTemplateWithInvalidCredentials();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
-    }
-
-    @Test
-    void canGetMetricsWhenAuthenticated() throws IllegalStateException {
-        TestRestTemplate restTemplate = getRestTemplateWithValidCredentials();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/metrics"), String.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Test
-    void getPrometheusRefusesAcccessWhenAnonymous() throws IllegalStateException {
-        TestRestTemplate restTemplate = getAnonymousRestTemplate();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
-    }
-
-    @Test
-    void getPrometheusRefusesAcccessWhenCredentialsInvalid() throws IllegalStateException {
-        TestRestTemplate restTemplate = getRestTemplateWithInvalidCredentials();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.UNAUTHORIZED));
-    }
-
-    @Test
-    void canGetPrometheusWhenAuthenticated() throws IllegalStateException {
-        TestRestTemplate restTemplate = getRestTemplateWithValidCredentials();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(getUri("actuator/prometheus"), String.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
     private TestRestTemplate getAnonymousRestTemplate() {
         return new TestRestTemplate();
     }
