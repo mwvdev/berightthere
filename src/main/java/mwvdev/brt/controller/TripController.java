@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -38,29 +35,26 @@ public class TripController {
         return new ResponseEntity<>(tripIdentifier, HttpStatus.OK);
     }
 
-    @RequestMapping("/{tripIdentifier}/addLocation/{latitude}/{longitude}")
-    public ResponseEntity addLocation(@PathVariable String tripIdentifier,
-                                      @PathVariable double latitude,
-                                      @PathVariable double longitude,
-                                      @RequestParam(required = false) Double accuracy) {
-        if(latitude < -90 || latitude > 90) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    @PostMapping("/{tripIdentifier}/addLocation")
+    public ResponseEntity<Void> addLocation(@PathVariable String tripIdentifier,
+                                            @RequestBody Location location) {
+        if(location.getLatitude() < -90 || location.getLatitude() > 90) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if(longitude < -180 || longitude > 180) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if(location.getLongitude() < -180 || location.getLongitude() > 180) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Location location;
         try {
-            location = tripService.addLocation(tripIdentifier, latitude, longitude, accuracy);
+            tripService.addLocation(tripIdentifier, location);
         }
         catch (UnknownTripException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         simpMessagingTemplate.convertAndSend("/topic/" + tripIdentifier, location);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/{tripIdentifier}/locations")

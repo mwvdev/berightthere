@@ -37,17 +37,15 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public Location addLocation(String tripIdentifier, double latitude, double longitude, Double accuracy) {
+    public void addLocation(String tripIdentifier, Location location) {
         TripEntity trip = tripRepository.findByTripIdentifier(tripIdentifier);
         if(trip == null) {
             throw new UnknownTripException();
         }
 
-        LocationEntity locationEntity = new LocationEntity(trip.getId(), latitude, longitude, accuracy);
+        LocationEntity locationEntity = locationMapper.toEntity(trip.getId(), location);
         trip.getLocations().add(locationEntity);
         tripRepository.save(trip);
-
-        return locationMapper.toLocation(locationEntity);
     }
 
     @Override

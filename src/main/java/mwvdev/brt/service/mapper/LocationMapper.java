@@ -5,6 +5,8 @@ import mwvdev.brt.model.Location;
 
 public interface LocationMapper {
 
+    LocationEntity toEntity(long tripId, Location location);
+
     Location toLocation(LocationEntity locationEntity);
 
 }

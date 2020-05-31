@@ -1,5 +1,7 @@
 package mwvdev.brt.controller;
 
+import mwvdev.brt.TripTestHelper;
+import mwvdev.brt.model.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -32,7 +34,9 @@ class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     void canAddLocationAnonymously() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
-        ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/addLocation/55.6745/12.56"), String.class);
+        Location location = TripTestHelper.createReferenceLocation();
+
+        ResponseEntity<String> response = restTemplate.postForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/addLocation"), location, String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }

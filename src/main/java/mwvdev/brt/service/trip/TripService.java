@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public interface TripService {
 
     String checkin();
-    Location addLocation(String tripIdentifier, double latitude, double longitude, Double accuracy);
+    void addLocation(String tripIdentifier, Location location);
     Trip getTrip(String tripIdentifier);
 
 }

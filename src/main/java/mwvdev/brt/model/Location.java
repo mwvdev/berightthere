@@ -1,13 +1,30 @@
 package mwvdev.brt.model;
 
-import java.io.Serializable;
+public class Location {
 
-public interface Location extends Serializable {
+    private double latitude;
+    private double longitude;
+    private Double accuracy;
 
-    double getLatitude();
+    public Location() {
+    }
 
-    double getLongitude();
+    public Location(double latitude, double longitude, Double accuracy) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.accuracy = accuracy;
+    }
 
-    Double getAccuracy();
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public Double getAccuracy() {
+        return accuracy;
+    }
 
 }

@@ -11,17 +11,15 @@ import mwvdev.brt.service.mapper.LocationMapper;
 import mwvdev.brt.service.mapper.TripMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = TripServiceImpl.class)
@@ -42,9 +40,7 @@ class TripServiceImplTest {
     private LocationMapper locationMapper;
 
     private static final String tripIdentifier = "0c98b95e-848f-4589-a7f9-dcc7dde95725";
-    private static final double latitude = 55.6912296;
-    private static final double longitude = 12.5714064;
-    private static final double accuracy = 0.92;
+    private static final Location location = TripTestHelper.createReferenceLocation();
 
     @BeforeEach
     void setUp() {
@@ -64,22 +60,18 @@ class TripServiceImplTest {
     void canAddLocation() {
         TripEntity tripEntity = TripTestHelper.createTripEntity(tripIdentifier);
         when(tripRepository.findByTripIdentifier(tripIdentifier)).thenReturn(tripEntity);
-        Location expectedLocation = mock(Location.class);
-        when(locationMapper.toLocation(any())).thenReturn(expectedLocation);
 
-        Location actualLocation = tripService.addLocation(tripIdentifier, latitude, longitude, accuracy);
+        LocationEntity locationEntity = mock(LocationEntity.class);
+        when(locationMapper.toEntity(tripEntity.getId(), location)).thenReturn(locationEntity);
+
+        tripService.addLocation(tripIdentifier, location);
 
         verify(tripRepository).save(tripEntity);
-        ArgumentCaptor<LocationEntity> locationEntityCaptor = ArgumentCaptor.forClass(LocationEntity.class);
-        verify(locationMapper).toLocation(locationEntityCaptor.capture());
 
-        assertThat(actualLocation, is(expectedLocation));
+        List<LocationEntity> locations = tripEntity.getLocations();
+        LocationEntity lastLocationEntity = locations.get(locations.size() - 1);
 
-        LocationEntity createdLocationEntity = locationEntityCaptor.getValue();
-        assertThat(tripEntity.getLocations(), hasItem(createdLocationEntity));
-        assertThat(createdLocationEntity.getLatitude(), is(latitude));
-        assertThat(createdLocationEntity.getLongitude(), is(longitude));
-        assertThat(createdLocationEntity.getAccuracy(), is(accuracy));
+        assertThat(lastLocationEntity, is(locationEntity));
     }
 
     @Test()
@@ -87,7 +79,7 @@ class TripServiceImplTest {
         when(tripRepository.findByTripIdentifier(tripIdentifier)).thenReturn(null);
 
         assertThrows(UnknownTripException.class, () ->
-                tripService.addLocation(tripIdentifier, latitude, longitude, accuracy));
+                tripService.addLocation(tripIdentifier, location));
     }
 
     @Test
