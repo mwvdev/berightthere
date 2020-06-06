@@ -21,7 +21,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -123,7 +123,7 @@ class BrokerControllerIntegrationTest {
     }
 
     private String getPayload(Message<?> actualMessage) {
-        return new String((byte[]) actualMessage.getPayload(), Charset.forName("UTF-8"));
+        return new String((byte[]) actualMessage.getPayload(), StandardCharsets.UTF_8);
     }
 
 }

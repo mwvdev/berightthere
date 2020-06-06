@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -84,11 +85,12 @@ class TripControllerIntegrationTest {
     }
 
     private static Stream<Location> provideInvalidLocations() {
+        OffsetDateTime measuredAt = TripTestHelper.createMeasuredAt(17, 20);
         return Stream.of(
-                new Location(-100, 0, null),
-                new Location(100, 0, null),
-                new Location(0, -190, null),
-                new Location(0, 190, null));
+                new Location(-100, 0, measuredAt, null),
+                new Location(100, 0, measuredAt, null),
+                new Location(0, -190, measuredAt, null),
+                new Location(0, 190, measuredAt, null));
     }
 
     @Test

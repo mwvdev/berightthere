@@ -44,6 +44,7 @@ public class TripEntity implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "trip_id")
+    @OrderBy("measuredAt ASC")
     public List<LocationEntity> getLocations() {
         return locations;
     }

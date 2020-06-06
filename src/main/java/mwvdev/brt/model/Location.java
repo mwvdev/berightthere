@@ -1,17 +1,21 @@
 package mwvdev.brt.model;
 
+import java.time.OffsetDateTime;
+
 public class Location {
 
     private double latitude;
     private double longitude;
+    private OffsetDateTime measuredAt;
     private Double accuracy;
 
-    public Location() {
+    protected Location() {
     }
 
-    public Location(double latitude, double longitude, Double accuracy) {
+    public Location(double latitude, double longitude, OffsetDateTime measuredAt, Double accuracy) {
         this.latitude = latitude;
         this.longitude = longitude;
+        this.measuredAt = measuredAt;
         this.accuracy = accuracy;
     }
 
@@ -21,6 +25,10 @@ public class Location {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public OffsetDateTime getMeasuredAt() {
+        return measuredAt;
     }
 
     public Double getAccuracy() {

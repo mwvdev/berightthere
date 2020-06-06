@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "location")
@@ -13,16 +14,17 @@ public class LocationEntity implements Serializable {
     private long tripId;
     private double latitude;
     private double longitude;
+    private OffsetDateTime measuredAt;
     private Double accuracy;
 
     protected LocationEntity() {
-
     }
 
-    public LocationEntity(long tripId, double latitude, double longitude, Double accuracy) {
+    public LocationEntity(long tripId, double latitude, double longitude, OffsetDateTime measuredAt, Double accuracy) {
         this.tripId = tripId;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.measuredAt = measuredAt;
         this.accuracy = accuracy;
     }
 
@@ -61,6 +63,14 @@ public class LocationEntity implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public OffsetDateTime getMeasuredAt() {
+        return measuredAt;
+    }
+
+    public void setMeasuredAt(OffsetDateTime measuredAt) {
+        this.measuredAt = measuredAt;
     }
 
     public Double getAccuracy() {

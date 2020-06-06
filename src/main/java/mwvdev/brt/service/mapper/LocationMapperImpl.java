@@ -9,12 +9,12 @@ public class LocationMapperImpl implements LocationMapper {
 
     @Override
     public LocationEntity toEntity(long tripId, Location location) {
-        return new LocationEntity(tripId, location.getLatitude(), location.getLongitude(), location.getAccuracy());
+        return new LocationEntity(tripId, location.getLatitude(), location.getLongitude(), location.getMeasuredAt(), location.getAccuracy());
     }
 
     @Override
     public Location toLocation(LocationEntity locationEntity) {
-        return new Location(locationEntity.getLatitude(), locationEntity.getLongitude(), locationEntity.getAccuracy());
+        return new Location(locationEntity.getLatitude(), locationEntity.getLongitude(), locationEntity.getMeasuredAt(), locationEntity.getAccuracy());
     }
 
 }
