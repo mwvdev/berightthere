@@ -6,12 +6,13 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
 
     var config = module.config();
     var eventEmitter = new EventEmitter();
-    eventEmitter.addListener(mapEvents.location.received, function(location) {
-        travelPath.addLatLng([location.latitude, location.longitude]);
-        positionMarker.setLatLng([location.latitude, location.longitude])
+    eventEmitter.addListener(mapEvents.location.singleReceived, function(location) {
+        var latLng = mapToLatLng(location);
+        travelPath.addLatLng(latLng);
+        positionMarker.setLatLng(latLng)
     });
 
-    eventEmitter.addListener(mapEvents.websocket.reconnected, function(locations) {
+    eventEmitter.addListener(mapEvents.location.allReceived, function(locations) {
         travelPath.remove();
         travelPath = createTravelPath(map, locations, { color: '#00a2e8' });
 
@@ -50,17 +51,19 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
         travelPath = createTravelPath(map, locations, { color: '#00a2e8' });
 
         var latestLocation = locations[locations.length-1];
-        positionMarker = L.marker([latestLocation.latitude, latestLocation.longitude]).addTo(map);
+        positionMarker = L.marker(mapToLatLng(latestLocation)).addTo(map);
 
         eventEmitter.emit(mapEvents.viewport.staleBounds);
     }
 
     function createTravelPath(map, locations, options) {
-        var latLngs = locations.map(function(location) {
-            return [location.latitude, location.longitude];
-        });
+        var latLngs = locations.map(mapToLatLng);
 
         return L.polyline(latLngs, options).addTo(map);
+    }
+
+    function mapToLatLng(location) {
+        return [location.latitude, location.longitude];
     }
 
     initMap(config.locations);

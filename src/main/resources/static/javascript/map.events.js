@@ -1,7 +1,8 @@
 define(function() {
     return {
         location: {
-            received: "location-received"
+            allReceived: "location-all-received",
+            singleReceived: "location-single-received"
         },
         viewport: {
             boundedMarkerCreated: "marker-bounded-created",
@@ -9,6 +10,7 @@ define(function() {
             staleBounds: "map-stale-bounds"
         },
         websocket: {
+            locationReceived: "websocket-location-received",
             reconnected: "websocket-reconnected"
         }
     };

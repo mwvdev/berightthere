@@ -5,8 +5,8 @@ define(["map.core", "map.events", "sockjs", "stomp", "module"], function(mapCore
     var stompClient;
     function initialize(tripIdentifier) {
         function connectedCallback(stompClient, reconnected, frame) {
-            stompClient.subscribe('/topic/' + tripIdentifier, function(location) {
-                eventEmitter.emit(mapEvents.location.received, JSON.parse(location.body));
+            stompClient.subscribe('/topic/' + tripIdentifier, function(message) {
+                eventEmitter.emit(mapEvents.websocket.locationReceived, JSON.parse(message.body));
             });
 
             if (reconnected) {

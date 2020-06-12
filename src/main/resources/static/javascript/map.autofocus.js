@@ -7,8 +7,8 @@ define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
     var autoFocusingEvents = [
         mapEvents.viewport.boundedMarkerCreated,
         mapEvents.viewport.boundedMarkerRemoved,
-        mapEvents.location.received,
-        mapEvents.websocket.reconnected
+        mapEvents.location.singleReceived,
+        mapEvents.location.allReceived
     ];
     autoFocusingEvents.forEach(function(event) {
         eventEmitter.addListener(event, fitBoundsWhenAutoFocusing);

@@ -8,13 +8,17 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
     <script th:inline="javascript">
         /*<![CDATA[*/
+        var initialLocations = [[${locations}]];
         var require = {
             config: {
                 'map.accuracy': {
                     location: [[${latestLocation}]]
                 },
                 'map.core': {
-                    locations: [[${locations}]]
+                    locations: initialLocations
+                },
+                'map.state': {
+                    locations: initialLocations
                 },
                 'websocket': {
                     tripIdentifier: [[${tripIdentifier}]]

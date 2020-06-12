@@ -3,10 +3,10 @@ define(["leaflet", "map.core", "map.events", "module"], function(L, mapCore, map
 
     var config = module.config();
     var eventEmitter = mapCore.getEventEmitter();
-    eventEmitter.addListener(mapEvents.location.received, function(location) {
+    eventEmitter.addListener(mapEvents.location.singleReceived, function(location) {
         updateAccuracyIndicator(accuracyIndicator, location);
     });
-    eventEmitter.addListener(mapEvents.websocket.reconnected, function(locations) {
+    eventEmitter.addListener(mapEvents.location.allReceived, function(locations) {
         updateAccuracyIndicator(accuracyIndicator, locations[locations.length-1]);
     });
 
