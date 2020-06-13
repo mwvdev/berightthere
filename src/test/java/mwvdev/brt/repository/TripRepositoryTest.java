@@ -37,7 +37,7 @@ class TripRepositoryTest {
         OffsetDateTime expectedMeasuredAt = OffsetDateTime.of(LocalDateTime.of(2020, 5, 30, 17, 31, 9), ZoneOffset.ofHours(2));
         assertThat(locationEntity.getLatitude(), is(55.6739060));
         assertThat(locationEntity.getLongitude(), is(12.5556991));
-        assertThat(locationEntity.getMeasuredAt(), is(expectedMeasuredAt));
+        assertThat(locationEntity.getMeasuredAt().toInstant(), is(expectedMeasuredAt.toInstant()));
         assertThat(locationEntity.getAccuracy(), is(0.59));
     }
 
