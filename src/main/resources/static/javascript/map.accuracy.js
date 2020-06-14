@@ -1,8 +1,8 @@
 define(["leaflet", "map.core", "map.events", "module", "utils"], function(L, mapCore, mapEvents, module, utils) {
-    var accuracyIndicator;
+    let accuracyIndicator;
 
-    var config = module.config();
-    var eventEmitter = mapCore.getEventEmitter();
+    const config = module.config();
+    const eventEmitter = mapCore.getEventEmitter();
     eventEmitter.addListener(mapEvents.location.singleReceived, function(location) {
         updateAccuracyIndicator(accuracyIndicator, location);
     });

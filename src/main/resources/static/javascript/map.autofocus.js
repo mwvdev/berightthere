@@ -1,10 +1,10 @@
 define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
-    var button;
-    var autoFocusEnabled = true;
+    let button;
+    let autoFocusEnabled = true;
 
-    var eventEmitter = mapCore.getEventEmitter();
+    const eventEmitter = mapCore.getEventEmitter();
 
-    var autoFocusingEvents = [
+    const autoFocusingEvents = [
         mapEvents.viewport.boundedMarkerCreated,
         mapEvents.viewport.boundedMarkerRemoved,
         mapEvents.location.singleReceived,
@@ -34,7 +34,7 @@ define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
 
     L.Control.AutoFocus = L.Control.extend({
         onAdd: function() {
-            var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             button = L.DomUtil.create('a', 'auto-focus focusing', container);
             button.innerHTML = '<i class="icon-binoculars" />';
             button.role = "button";

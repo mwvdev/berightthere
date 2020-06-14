@@ -3,11 +3,11 @@ define(["leaflet", "map.core", "map.events", "utils"], function(L, mapCore, mapE
         return;
     }
 
-    var button;
-    var watchId = null;
-    var visitorPositionMarker = L.marker([0, 0]);
+    let button;
+    let watchId = null;
+    const visitorPositionMarker = L.marker([0, 0]);
 
-    var eventEmitter = mapCore.getEventEmitter();
+    const eventEmitter = mapCore.getEventEmitter();
 
     function handleClick() {
         if (followingVisitorLocation()) {
@@ -23,13 +23,13 @@ define(["leaflet", "map.core", "map.events", "utils"], function(L, mapCore, mapE
     }
 
     function followVisitorLocation() {
-        var positionOptions = {
+        const positionOptions = {
             enableHighAccuracy: true,
             maximumAge: 15000
         };
 
         watchId = navigator.geolocation.watchPosition(function (position) {
-            var location = position.coords;
+            const location = position.coords;
             visitorPositionMarker.setLatLng(utils.mapToLatLng(location)).addTo(mapCore.getInstance());
 
             eventEmitter.emit(mapEvents.viewport.boundedMarkerCreated, visitorPositionMarker);
@@ -52,7 +52,7 @@ define(["leaflet", "map.core", "map.events", "utils"], function(L, mapCore, mapE
 
     L.Control.VisitorLocation = L.Control.extend({
         onAdd: function() {
-            var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             button = L.DomUtil.create('a', 'visitor-location', container);
             button.innerHTML = '<i class="icon-crosshairs" />';
             button.role = "button";

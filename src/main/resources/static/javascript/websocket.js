@@ -1,8 +1,9 @@
 define(["map.core", "map.events", "sockjs", "stomp", "module"], function(mapCore, mapEvents, sockjs, stomp, module) {
-    var config = module.config();
-    var eventEmitter = mapCore.getEventEmitter();
+    const config = module.config();
+    const eventEmitter = mapCore.getEventEmitter();
 
-    var stompClient;
+    let stompClient;
+
     function initialize(tripIdentifier) {
         function connectedCallback(stompClient, reconnected, frame) {
             stompClient.subscribe('/topic/' + tripIdentifier, function(message) {
@@ -25,7 +26,7 @@ define(["map.core", "map.events", "sockjs", "stomp", "module"], function(mapCore
         }
 
         function createStompClient(reconnected) {
-            var stompClient = stomp.over(new sockjs('/berightthere'), { heartbeat: false });
+            const stompClient = stomp.over(new sockjs('/berightthere'), {heartbeat: false});
             stompClient.connect({}, connectedCallback.bind(this, stompClient, reconnected), errorCallback.bind(this, stompClient));
 
             return stompClient;

@@ -1,11 +1,11 @@
 define(["map.core", "map.events", "module", "utils"], function (mapCore, mapEvents, module, utils) {
-    var config = module.config();
-    var eventEmitter = mapCore.getEventEmitter();
+    const config = module.config();
+    const eventEmitter = mapCore.getEventEmitter();
 
-    var locations = config.locations.map(utils.mapToLocation);
+    let locations = config.locations.map(utils.mapToLocation);
 
     eventEmitter.addListener(mapEvents.websocket.locationReceived, function (receivedLocation) {
-        var location = utils.mapToLocation(receivedLocation);
+        const location = utils.mapToLocation(receivedLocation);
 
         if (isLatestLocation(location)) {
             locations.push(location);
@@ -13,7 +13,7 @@ define(["map.core", "map.events", "module", "utils"], function (mapCore, mapEven
             eventEmitter.emit(mapEvents.location.singleReceived, location);
         }
         else {
-            var locationIndex = findLocationIndex(location);
+            const locationIndex = findLocationIndex(location);
             locations.splice(locationIndex, 0, location);
 
             eventEmitter.emit(mapEvents.location.allReceived, locations);
@@ -29,13 +29,13 @@ define(["map.core", "map.events", "module", "utils"], function (mapCore, mapEven
             return true;
         }
 
-        var lastLocation = locations[locations.length - 1];
+        const lastLocation = locations[locations.length - 1];
         return location.measuredAt > lastLocation.measuredAt;
     }
 
     function findLocationIndex(location) {
-        for (var i = 0; i < locations.length; i++) {
-            var currentLocation = locations[i];
+        for (let i = 0; i < locations.length; i++) {
+            const currentLocation = locations[i];
 
             if (location.measuredAt < currentLocation.measuredAt) {
                 return i;
