@@ -1,4 +1,4 @@
-define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
+define(["leaflet", "map.core", "map.events", "utils"], function(L, mapCore, mapEvents, utils) {
     if(!navigator.geolocation) {
         return;
     }
@@ -30,7 +30,7 @@ define(["leaflet", "map.core", "map.events"], function(L, mapCore, mapEvents) {
 
         watchId = navigator.geolocation.watchPosition(function (position) {
             var location = position.coords;
-            visitorPositionMarker.setLatLng([location.latitude, location.longitude]).addTo(mapCore.getInstance());
+            visitorPositionMarker.setLatLng(utils.mapToLatLng(location)).addTo(mapCore.getInstance());
 
             eventEmitter.emit(mapEvents.viewport.boundedMarkerCreated, visitorPositionMarker);
         }, function() {

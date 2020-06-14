@@ -1,4 +1,4 @@
-define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitter, L, mapEvents, module) {
+define(["eventEmitter", "leaflet", "map.events", "module", "utils"], function(EventEmitter, L, mapEvents, module, utils) {
     var map;
     var travelPath;
     var positionMarker;
@@ -7,7 +7,7 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
     var config = module.config();
     var eventEmitter = new EventEmitter();
     eventEmitter.addListener(mapEvents.location.singleReceived, function(location) {
-        var latLng = mapToLatLng(location);
+        var latLng = utils.mapToLatLng(location);
         travelPath.addLatLng(latLng);
         positionMarker.setLatLng(latLng)
     });
@@ -51,19 +51,15 @@ define(["eventEmitter", "leaflet", "map.events", "module"], function(EventEmitte
         travelPath = createTravelPath(map, locations, { color: '#00a2e8' });
 
         var latestLocation = locations[locations.length-1];
-        positionMarker = L.marker(mapToLatLng(latestLocation)).addTo(map);
+        positionMarker = L.marker(utils.mapToLatLng(latestLocation)).addTo(map);
 
         eventEmitter.emit(mapEvents.viewport.staleBounds);
     }
 
     function createTravelPath(map, locations, options) {
-        var latLngs = locations.map(mapToLatLng);
+        var latLngs = locations.map(utils.mapToLatLng);
 
         return L.polyline(latLngs, options).addTo(map);
-    }
-
-    function mapToLatLng(location) {
-        return [location.latitude, location.longitude];
     }
 
     initMap(config.locations);

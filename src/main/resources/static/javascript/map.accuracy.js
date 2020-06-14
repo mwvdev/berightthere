@@ -1,4 +1,4 @@
-define(["leaflet", "map.core", "map.events", "module"], function(L, mapCore, mapEvents, module) {
+define(["leaflet", "map.core", "map.events", "module", "utils"], function(L, mapCore, mapEvents, module, utils) {
     var accuracyIndicator;
 
     var config = module.config();
@@ -11,7 +11,7 @@ define(["leaflet", "map.core", "map.events", "module"], function(L, mapCore, map
     });
 
     function createAccuracyIndicator(map, location) {
-        return L.circle([location.latitude, location.longitude], {
+        return L.circle(utils.mapToLatLng(location), {
             color: '#5697ff',
             fillColor: '#7badfc',
             fillOpacity: 0.3,
@@ -26,7 +26,7 @@ define(["leaflet", "map.core", "map.events", "module"], function(L, mapCore, map
             return;
         }
 
-        accuracyIndicator.setLatLng([location.latitude, location.longitude]);
+        accuracyIndicator.setLatLng(utils.mapToLatLng(location));
         accuracyIndicator.setRadius(location.accuracy);
     }
 

@@ -1,11 +1,11 @@
-define(["map.core", "map.events", "module"], function (mapCore, mapEvents, module) {
+define(["map.core", "map.events", "module", "utils"], function (mapCore, mapEvents, module, utils) {
     var config = module.config();
     var eventEmitter = mapCore.getEventEmitter();
 
-    var locations = config.locations;
+    var locations = config.locations.map(utils.mapToLocation);
 
     eventEmitter.addListener(mapEvents.websocket.locationReceived, function (receivedLocation) {
-        var location = mapLocation(receivedLocation);
+        var location = utils.mapToLocation(receivedLocation);
 
         if (isLatestLocation(location)) {
             locations.push(location);
@@ -20,7 +20,7 @@ define(["map.core", "map.events", "module"], function (mapCore, mapEvents, modul
         }
     });
     eventEmitter.addListener(mapEvents.websocket.reconnected, function (receivedLocations) {
-        locations = receivedLocations.map(mapLocation);
+        locations = receivedLocations.map(utils.mapToLocation);
         eventEmitter.emit(mapEvents.location.allReceived, locations);
     });
 
@@ -43,14 +43,5 @@ define(["map.core", "map.events", "module"], function (mapCore, mapEvents, modul
         }
 
         return locations.length;
-    }
-
-    function mapLocation(location) {
-        return {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            measuredAt: new Date(location.measuredAt),
-            accuracy: location.accuracy
-        }
     }
 });
