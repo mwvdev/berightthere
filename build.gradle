@@ -1,10 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath('org.springframework.boot:spring-boot-gradle-plugin:2.3.5.RELEASE')
-    }
+plugins {
+    id 'org.springframework.boot' version '2.4.0'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+    id 'jacoco'
 }
 
 apply plugin: 'java'
@@ -15,8 +13,8 @@ apply plugin: 'io.spring.dependency-management'
 group = 'mwvdev.brt'
 version = '1.1.0-SNAPSHOT'
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
     mavenCentral()
