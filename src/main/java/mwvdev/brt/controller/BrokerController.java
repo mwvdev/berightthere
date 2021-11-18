@@ -16,7 +16,7 @@ import java.util.Collections;
 @Controller
 public class BrokerController {
 
-    private TripService tripService;
+    private final TripService tripService;
 
     @Autowired
     public BrokerController(TripService tripService) {

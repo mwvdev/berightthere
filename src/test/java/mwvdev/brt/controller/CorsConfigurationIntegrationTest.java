@@ -20,11 +20,11 @@ class CorsConfigurationIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void CanAddCors() {
-        RequestEntity requestEntity = RequestEntity.get(getUri("api/trip/checkin")).header(HttpHeaders.ORIGIN, "http://example.org").build();
-        ResponseEntity response = restTemplate.exchange(requestEntity, String.class);
+        RequestEntity<Void> requestEntity = RequestEntity.get(getUri("api/trip/checkin")).header(HttpHeaders.ORIGIN, "http://example.org").build();
+        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        assertThat(response.getHeaders().getAccessControlAllowOrigin(), is("*"));
+        assertThat(response.getHeaders().getAccessControlAllowOrigin(), is("http://example.org"));
     }
 
 }

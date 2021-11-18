@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Service
 public class TripMapperImpl implements TripMapper {
 
-    private LocationMapper locationMapper;
+    private final LocationMapper locationMapper;
 
     @Autowired
     public TripMapperImpl(LocationMapper locationMapper) {
@@ -25,7 +25,7 @@ public class TripMapperImpl implements TripMapper {
         List<Location> locations = tripEntity
                 .getLocations()
                 .stream()
-                .map(locationEntity -> locationMapper.toLocation(locationEntity))
+                .map(locationMapper::toLocation)
                 .collect(Collectors.toList());
 
         return new TripImpl(tripEntity.getTripIdentifier(), locations);

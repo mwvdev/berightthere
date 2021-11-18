@@ -25,7 +25,7 @@ class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     void canCheckinAnynomously() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
-        ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/checkin"), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(getUri("api/trip/checkin"), String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
@@ -45,7 +45,7 @@ class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     void canListLocations() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
-        ResponseEntity response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/locations"), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(getUri("api/trip/ab7d8df0-e952-4956-8c38-0351b90fd045/locations"), String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
@@ -54,7 +54,7 @@ class SecurityConfigurationIntegrationTest extends BaseIntegrationTest
     void canViewTrip() throws IllegalStateException {
         TestRestTemplate restTemplate = getAnonymousRestTemplate();
 
-        ResponseEntity response = restTemplate.getForEntity(getUri("trip/ab7d8df0-e952-4956-8c38-0351b90fd045"), String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(getUri("trip/ab7d8df0-e952-4956-8c38-0351b90fd045"), String.class);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
