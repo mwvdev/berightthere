@@ -6,6 +6,7 @@ import mwvdev.brt.service.trip.TripService;
 import mwvdev.brt.service.trip.UnknownTripException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(MapController.class)
+@WebMvcTest(value = MapController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class MapControllerIntegrationTest {
 
     @MockBean
