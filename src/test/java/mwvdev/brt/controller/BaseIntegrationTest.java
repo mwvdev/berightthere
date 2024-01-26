@@ -1,6 +1,6 @@
 package mwvdev.brt.controller;
 
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;

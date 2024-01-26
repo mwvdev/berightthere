@@ -1,20 +1,23 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.18'
-    id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
-    id 'jacoco'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 apply plugin: 'java'
-apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'mwvdev.brt'
 version = '1.1.0-SNAPSHOT'
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+java {
+    sourceCompatibility = '21'
+}
+
+jar {
+    enabled = false
+}
 
 repositories {
     mavenCentral()
@@ -28,8 +31,9 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-websocket')
 
-    implementation('com.fasterxml.jackson.module:jackson-modules-java8:2.16.1')
+    implementation('org.thymeleaf.extras:thymeleaf-extras-springsecurity6')
 
+    implementation('jakarta.persistence:jakarta.persistence-api')
     implementation('org.liquibase:liquibase-core')
 
     implementation('org.webjars:webjars-locator-core')
@@ -44,27 +48,11 @@ dependencies {
 
     //runtimeOnly('org.springframework.boot:spring-boot-devtools')
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-        exclude group: 'junit', module: 'junit'
-    }
-    testImplementation('org.apache.httpcomponents:httpclient')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.security:spring-security-test')
+    testImplementation('org.apache.httpcomponents.client5:httpclient5')
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
-}
-
-test {
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
-
+tasks.named('test') {
     useJUnitPlatform()
-
-    finalizedBy(jacocoTestReport)
 }
