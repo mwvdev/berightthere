@@ -4,6 +4,7 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointR
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -13,15 +14,13 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeRequests()
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
                 .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).authenticated()
-                .anyRequest().permitAll()
-                .and()
-                .httpBasic()
-                .and()
-                .cors();
+                .anyRequest().permitAll())
+            .httpBasic(Customizer.withDefaults())
+            .cors(Customizer.withDefaults());
 
         return http.build();
     }
