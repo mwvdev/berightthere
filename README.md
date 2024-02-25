@@ -1,8 +1,6 @@
 # berightthere
 
 [![Build status](https://github.com/mwvdev/berightthere/actions/workflows/gradle.yml/badge.svg)](https://github.com/mwvdev/berightthere/actions/workflows/gradle.yml)
-[![codecov](https://codecov.io/gh/mwvdev/berightthere/branch/master/graph/badge.svg)](https://codecov.io/gh/mwvdev/berightthere)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/mwvdev/berightthere.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mwvdev/berightthere/alerts/)
 
 A server that allows developers to integrate against an API to register a trip. Each trip is represented by a unique identifier and once allocated can be used for reporting GPS coordinates.
 
